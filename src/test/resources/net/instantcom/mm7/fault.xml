@@ -1,0 +1,21 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Header>
+		<mm7p6a0:TransactionID soap:mustUnderstand="1" soap:encodingStyle="" xmlns:mm7p6a0="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-4"
+			xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">123456</mm7p6a0:TransactionID>
+	</soap:Header>
+	<soap:Body>
+		<soap:Fault xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+			<faultcode>Client</faultcode>
+			<faultstring>Client error</faultstring>
+			<detail>
+				<mm7p6a0:RSErrorRsp xmlns:mm7p6a0="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-4">
+					<mm7p6a0:MM7Version>6.8.0</mm7p6a0:MM7Version>
+					<mm7p6a0:Status>
+						<mm7p6a0:StatusCode>4002</mm7p6a0:StatusCode>
+						<mm7p6a0:StatusText>Unsupported version</mm7p6a0:StatusText>
+					</mm7p6a0:Status>
+				</mm7p6a0:RSErrorRsp>
+			</detail>
+		</soap:Fault>
+	</soap:Body>
+</soap:Envelope>

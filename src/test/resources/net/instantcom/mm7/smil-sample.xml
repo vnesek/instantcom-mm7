@@ -1,0 +1,10 @@
+<smil>
+	<body>
+		<par dur='3s'>
+			<img src='cid:image' />
+		</par>
+		<par dur='7s'>
+			<text src='cid:text' />
+		</par>
+	</body>
+</smil>

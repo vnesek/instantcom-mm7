@@ -1,0 +1,20 @@
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+	<env:Header>
+		<mm7:TransactionID xmlns:mm7="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-6-7" env:mustUnderstand="1">
+			vas00001-sub
+		</mm7:TransactionID>
+	</env:Header>
+	<env:Body>
+		<SubmitRsp xmlns="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-6-7">
+			<MM7Version>6.7.0</MM7Version>
+			<Status>
+				<StatusCode>1000</StatusCode>
+				<StatusText>Success</StatusText>
+			</Status>
+			<MessageID>041502073667</MessageID>
+			<ApplicID>ifx.com.neon.downloadedPackage.MAFIA</ApplicID>
+			<ReplyApplicID>ifx.com.neon.MyPackage.MAFIA</ReplyApplicID>
+			<AuxApplicID>session.ABC.DEF</AuxApplicID>
+		</SubmitRsp>
+	</env:Body>
+</env:Envelope>

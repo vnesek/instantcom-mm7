@@ -1,0 +1,44 @@
+POST /mm7server/mm7 HTTP/1.1
+Host: localhost:8080
+Content-Type: multipart/related; boundary="NextPart_000_0125_01C19839.7237929064"; type="text/xml"; start="</cmvt256/mm7-deliver>"
+Content-Length: 1238
+SOAPAction: ""
+
+--NextPart_000_0125_01C19839.7237929064 
+Content-Type:text/xml; charset="utf-8"
+Content-ID: </cmvt256/mm7-deliver>
+
+<?xml version="1.0"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"> 
+      <env:Header>
+		<mm7:TransactionID xmlns:mm7="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-4" env:mustUnderstand="1">
+			vas00324-dlvr
+		</mm7:TransactionID>
+	</env:Header>
+	<env:Body>
+		<!-- Example of MM7_deliverReq -->
+		<DeliverReq xmlns="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-4">
+			<MM7Version>6.7.0</MM7Version>
+				<VASPID>TNN</VASPID>
+				<VASID>Reminder</VASID>
+			<MMSRelayServerID>240.110.75.34</MMSRelayServerID>
+			<LinkedID>wthr8391</LinkedID>
+			<Sender>
+				<RFC2822Address>97254265781@OMMS.com</RFC2822Address>
+			</Sender>
+			<TimeStamp>2002-04-15T14:35:21-05:00</TimeStamp>
+			<Priority>Normal</Priority>
+			<Subject>Weather Forecast</Subject>
+			<Content href="cid:forecast-location200102-86453"/>
+		</DeliverReq>
+	</env:Body>
+</env:Envelope>
+
+--NextPart_000_0125_01C19839.7237929064 
+Content-Type:text/plain;charset="utf-8"
+Content-ID:<forecast-location2000102-86453>
+
+Los Angeles, Calif, USA 
+--NextPart_000_0125_01C19839.7237929064--
+
+
