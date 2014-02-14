@@ -1,0 +1,15 @@
+<smil>
+    <head>
+        <layout>
+            <root-layout height="80" width="101"/>
+            <region fit="hidden" height="50%" id="Text" left="0%" top="0%" width="100%"/>
+            <region fit="hidden" height="50%" id="Image" left="0%" top="50%" width="100%"/>
+        </layout>
+    </head>
+    <body>
+      <par dur="5000ms">
+        <img region="Image" src="cid:image"/>
+        <text region="Text" src="cid:text"/>
+      </par>
+    </body>
+</smil>
