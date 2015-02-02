@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -55,14 +55,9 @@ public class BasicMMSC implements MMSC {
 
 			conn.setRequestProperty("Content-Type", request.getSoapContentType());
 			conn.setRequestProperty("User-Agent", getContext().getUserAgent());
-			// conn.setRequestProperty("Host", u.getHost() + (u.getPort() != -1?
-			// (":" + u.getPort()) : ""));
-			// conn.setRequestProperty("Host", "10.253.122.30:2007");
 			conn.setRequestProperty("Accept", "*/*");
 			conn.setRequestProperty("SOAPAction", "\"\"");
 
-			// conn.setRequestProperty("Content-Length",
-			// Integer.toString(body.length));
 			OutputStream out = conn.getOutputStream();
 			try {
 				MM7Message.save(request, out, getContext());
