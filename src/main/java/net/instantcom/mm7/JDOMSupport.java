@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -25,7 +25,7 @@ interface JDOMSupport {
 
 	/**
 	 * Save object's state to a new JDOM element.
-	 * 
+	 *
 	 * @param parent
 	 *            of a element
 	 * @return JDOM element with serialized object' state
@@ -34,8 +34,9 @@ interface JDOMSupport {
 
 	/**
 	 * Loads object's state from an JDOM Element.
-	 * 
+	 *
 	 * @param element
+	 *            to load state from
 	 */
 	void load(Element element);
 
