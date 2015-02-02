@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -119,7 +119,6 @@ public class DeliverReq extends MM7Request implements HasContent {
 	@Override
 	public void setContent(Content content) {
 		this.content = content;
-		System.out.println(content);
 	}
 
 	public void setLinkedId(String linkedId) {
@@ -171,7 +170,7 @@ public class DeliverReq extends MM7Request implements HasContent {
 		response.setStatusCode(MM7Response.SC_SUCCESS);
 		return response;
 	}
-	
+
 	private Address sender;
 	private String linkedId;
 	private List<Address> recipients = new ArrayList<Address>();
