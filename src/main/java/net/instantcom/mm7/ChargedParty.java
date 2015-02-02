@@ -36,5 +36,4 @@ public enum ChargedParty {
 	private final String display;
 
 	static final Map<String, ChargedParty> map = new StringToEnumMap<ChargedParty>(ChargedParty.values());
-
 }

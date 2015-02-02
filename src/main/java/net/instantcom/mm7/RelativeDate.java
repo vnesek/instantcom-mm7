@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -46,11 +46,11 @@ public class RelativeDate {
 		}
 		this.representation = xcal.toXMLFormat();
 	}
-	
+
 	public RelativeDate(String representation) {
 		this.representation = representation;
 	}
-	
+
 	public Date toDate() {
 		if (representation == null) {
 			return null;
@@ -69,10 +69,3 @@ public class RelativeDate {
 
 	private String representation;
 }
-
-/*
-public static void main(String[] args) throws DatatypeConfigurationException {
-	XMLGregorianCalendar cal = dataTypeFactory.newXMLGregorianCalendar("P90D" * "2002-01-02T09:30:47-05:00" *);
-	System.out.println(cal.toGregorianCalendar().getTime());
-}
-*/

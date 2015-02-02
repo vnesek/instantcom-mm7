@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -45,14 +45,14 @@ public class MM7Message implements JDOMSupport {
 	 * Loads a correct subclass of a MM7 message by looking at a SOAP request
 	 * and instantiating an object of related class. Handles SOAP with
 	 * attachments.
-	 * 
+	 *
 	 * @param in
 	 *            input stream to load message from
 	 * @param contentType
 	 *            of a request. Can be an multipart or text/xml
 	 * @param ctx
 	 *            configuration for loading of message
-	 *            
+	 *
 	 * @return an MM7Message instance
 	 * @throws IOException
 	 *             if can't deserialize SOAP message or some other IO problem
@@ -169,21 +169,21 @@ public class MM7Message implements JDOMSupport {
 		XMLOutputter xo = new XMLOutputter();
 		xo.setFormat(ctx.getJdomFormat());
 		Writer w = new OutputStreamWriter(out, "utf-8");
-		
+
 		if (mm7.isMultipart()) {
 			Content content = ((HasContent) mm7).getContent();
-		
+
 			String boundary = mm7.getSoapBoundary();
 			w.write("--");
 			w.write(boundary);
 			w.write("\r\nContent-Type: text/xml; charset=\"utf-8\"\r\nContent-ID: <mm7-soap>\r\n\r\n");
-		
+
 			xo.output(mm7.toSOAP(), w);
-		
+
 			w.write("\r\n--");
 			w.write(boundary);
 			w.flush();
-		
+
 			content.writeTo(out, "mm7-content", ctx);
 			w.write("\r\n--");
 			w.write(boundary);
@@ -307,7 +307,7 @@ public class MM7Message implements JDOMSupport {
 
 	/**
 	 * Returns true if this message has content.
-	 * 
+	 *
 	 * @return true if SOAP message needs multipart encoding
 	 */
 	public boolean isMultipart() {
@@ -376,8 +376,9 @@ public class MM7Message implements JDOMSupport {
 		Element env = new Element("Envelope", JDOMSupport.ENVELOPE);
 		Element header = new Element("Header", JDOMSupport.ENVELOPE);
 		if (transactionId != null) {
-			header.addContent(new Element("TransactionID", namespace).setText(transactionId).setAttribute(
-					"mustUnderstand", "1", JDOMSupport.ENVELOPE));
+			header.addContent(new Element("TransactionID", namespace) //
+					.setText(transactionId) //
+					.setAttribute("mustUnderstand", "1", JDOMSupport.ENVELOPE));
 		}
 		env.addContent(header);
 

@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -26,21 +26,20 @@ public class TextContent extends BasicContent {
 	public TextContent() {
 		this("");
 	}
-	
+
 	public TextContent(String text) {
 		setText(text);
 		setContentType("text/plain; charset=\"utf-8\"");
 	}
-	
 
 	public String getText() {
 		return text;
 	}
-	
+
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
 	@Override
 	public void writeTo(OutputStream out, String contentId, MM7Context ctx) throws IOException {
 		if (contentId == null) {
@@ -61,6 +60,6 @@ public class TextContent extends BasicContent {
 	public int getContentLength() {
 		return text.length();
 	}
-	
+
 	private String text;
 }

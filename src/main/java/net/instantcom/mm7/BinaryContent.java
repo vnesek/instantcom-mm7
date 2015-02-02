@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -29,7 +29,7 @@ public class BinaryContent extends BasicContent {
 	 * to <code>dest</code> starting with <code>off</code>. Returns number of
 	 * bytes copied. If returned number is less than len then InputStream has
 	 * returned end-of-file.
-	 * 
+	 *
 	 * @param in
 	 * @param dest
 	 * @param off
@@ -123,33 +123,24 @@ public class BinaryContent extends BasicContent {
 		if (contentId == null) {
 			contentId = getContentId();
 		}
-		
+
 		StringBuilder b = new StringBuilder();
 		b.append("\r\nContent-Type: ");
 		b.append(getContentType());
 		if (contentId != null) {
 			b.append("\r\nContent-ID: <" + contentId + ">");
 		}
-		
-		boolean sevenBit = "application/smil".equals(getContentType()); 
+
+		boolean sevenBit = "application/smil".equals(getContentType());
 		if (sevenBit) {
 			b.append("\r\nContent-Transfer-Encoding: 7bit\r\n\r\n");
 		} else {
-			//b.append("\r\nContent-Transfer-Encoding: base64\r\n\r\n");
 		    b.append("\r\nContent-Transfer-Encoding: 8bit\r\n\r\n");
 		}
 		out.write(b.toString().getBytes("iso-8859-1"));
-		
-		if (sevenBit) {
-			out.write(data);
-		} else {
-		    out.write(data);
-			//OutputStream bout = MM7Message.createBase64OutputStream(out);
-			//bout.write(data);
-			//bout.close();
-		}
+		out.write(data);
 	}
-	
+
 	@Override
 	public int getContentLength() {
 		return data.length;
@@ -160,5 +151,4 @@ public class BinaryContent extends BasicContent {
     }
 
 	private byte[] data;
-
 }

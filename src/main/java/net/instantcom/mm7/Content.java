@@ -33,8 +33,8 @@ interface Content extends Iterable<Content> {
 	String getContentLocation();
 	
 	/**
-	 * Returns a list of parts or null if content isn't multi part
-	 * @return a list of parts or null if content isn't multi part
+	 * Returns a list of parts or null if content isn't multipart
+	 * @return a list of parts or null if content isn't multipart
 	 */
 	List<Content> getParts();
 }
