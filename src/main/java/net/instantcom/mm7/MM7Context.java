@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -28,7 +28,7 @@ import org.jvnet.mimepull.MIMEConfig;
 /**
  * Configuration for reading and writing MM7 messages. You can configure
  * parameters for serializing and deserializing and few recovery options.
- * 
+ *
  * @author vnesek
  */
 public class MM7Context {
@@ -54,12 +54,12 @@ public class MM7Context {
 		return mimePullConfig;
 	}
 
-	public String getMm7Version() {
-		return mm7Version;
-	}
-
 	public String getMm7Namespace() {
 		return mm7Namespace;
+	}
+
+	public String getMm7Version() {
+		return mm7Version;
 	}
 
 	public String getUserAgent() {
@@ -122,12 +122,12 @@ public class MM7Context {
 		this.mimePullConfig = mimePullConfig;
 	}
 
-	public void setMm7Version(String mm7version) {
-		this.mm7Version = mm7version;
-	}
-
 	public void setMm7Namespace(String namespace) {
 		this.mm7Namespace = namespace;
+	}
+
+	public void setMm7Version(String mm7version) {
+		this.mm7Version = mm7version;
 	}
 
 	public void setUseFirstContentFoundIfHrefIsInvalid(boolean useFirstIfContentHrefIsInvalid) {
@@ -154,9 +154,8 @@ public class MM7Context {
 	private Constructor<? extends OutputStream> base64OutputStreamConstructor;
 	private Format jdomFormat;
 	private MIMEConfig mimePullConfig;
-	private String mm7Version = About.MM7_VERSION;
 	private String mm7Namespace = About.MM7_NAMESPACE;
+	private String mm7Version = About.MM7_VERSION;
 	private boolean useFirstContentFoundIfHrefIsInvalid = true;
 	private String userAgent = "InstantCom-MM7/" + About.VERSION;
-
 }
