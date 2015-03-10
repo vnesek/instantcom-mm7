@@ -30,7 +30,7 @@ public class SubmitRsp extends MM7Response {
 	public void load(Element element) {
 		super.load(element);
 
-		Element body = element.getChild("Body", JDOMSupport.ENVELOPE);
+		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element rsp = body.getChild("SubmitRsp", namespace);
 		setMessageId(rsp.getChildTextTrim("MessageID", namespace));
 	}

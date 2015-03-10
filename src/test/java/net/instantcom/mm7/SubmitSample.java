@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -40,6 +40,8 @@ public class SubmitSample {
 
 		// Initialize MM7 client to MMSC
 		MMSC mmsc = new BasicMMSC(url);
+		mmsc.getContext().setMm7Namespace("http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-5-MM7-1-3");
+		mmsc.getContext().setMm7Version("5.3.0");
 
 		// Send a message
 		SubmitRsp submitRsp = mmsc.submit(sr);

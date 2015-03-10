@@ -72,7 +72,7 @@ public class MM7Error extends Exception implements JDOMSupport {
 
 	@Override
 	public void load(Element element) {
-		Element body = element.getChild("Body", ENVELOPE);
+		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element e = (Element) body.getChildren().get(0);
 		this.faultCode = e.getChildTextTrim("faultcode");
 		this.faultMessage = e.getChildTextTrim("faultstring");

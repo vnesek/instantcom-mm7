@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -165,10 +165,10 @@ public class SubmitReq extends MM7Request implements HasContent {
 			e.addContent(new Element("ExpiryDate", e.getNamespace()).setText(expiryDate.toString()));
 		}
 		if (deliveryReport != null) {
-			e.addContent(new Element("DeliveryReport", e.getNamespace()).setText(deliveryReport.toString()));
+			e.addContent(new Element("DeliveryReport", e.getNamespace()).setText(deliveryReport? "True" : "False"));
 		}
 		if (readReply != null) {
-			e.addContent(new Element("ReadReply", e.getNamespace()).setText(readReply.toString()));
+			e.addContent(new Element("ReadReply", e.getNamespace()).setText(readReply? "True" : "False"));
 		}
 		if (priority != null) {
 			e.addContent(new Element("Priority", e.getNamespace()).setText(priority.toString()));
@@ -183,7 +183,7 @@ public class SubmitReq extends MM7Request implements HasContent {
 			e.addContent(new Element("ChargedPartyID", e.getNamespace()).setText(chargedPartyId.toString()));
 		}
 		if (distributionIndicator != null) {
-			e.addContent(new Element("DistributionIndicator", e.getNamespace()).setText(distributionIndicator.toString()));
+			e.addContent(new Element("DistributionIndicator", e.getNamespace()).setText(distributionIndicator? "True" : "False"));
 		}
 
 		// deliveryCondition
@@ -200,12 +200,12 @@ public class SubmitReq extends MM7Request implements HasContent {
 			e.addContent(new Element("ContentClass", e.getNamespace()).setText(contentClass.toString()));
 		}
 		if (drmContent != null) {
-			e.addContent(new Element("DRMContent", e.getNamespace()).setText(drmContent.toString()));
+			e.addContent(new Element("DRMContent", e.getNamespace()).setText(drmContent? "True" : "False"));
 		}
 		if (content != null) {
 			Element c = new Element("Content", e.getNamespace());
 			if (allowAdaptations != null) {
-				c.setAttribute("allowAdaptations", allowAdaptations.toString());
+				c.setAttribute("allowAdaptations", allowAdaptations? "True" : "False");
 			}
 			c.setAttribute("href", "cid:mm7-content");
 			e.addContent(c);

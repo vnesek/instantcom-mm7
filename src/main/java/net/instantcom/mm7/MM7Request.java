@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -51,22 +51,26 @@ public class MM7Request extends MM7Message {
 			if (senderAddress != null) {
 				Element sa = new Element("SenderAddress", e.getNamespace());
 				si.addContent(sa);
-				sa.addContent(senderAddress.save(sa));
+				if (senderAddress.getAddressType() != null) {
+					sa.addContent(senderAddress.save(sa));
+				} else {
+					sa.addContent(senderAddress.getAddress());
+				}
 			}
 			e.addContent(si);
 		}
 		return e;
 	}
-	
+
 	public MM7Response reply() {
 		throw new UnsupportedOperationException("should be overriden by subclass");
 	}
-	
+
 	@Override
 	public void load(Element element) {
 		super.load(element);
-	
-		Element body = element.getChild("Body", JDOMSupport.ENVELOPE);
+
+		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element req = (Element) body.getChildren().get(0);
 		setVasId(req.getChildTextTrim("VASID", req.getNamespace()));
 		setVaspId(req.getChildTextTrim("VASPID", req.getNamespace()));
@@ -76,19 +80,19 @@ public class MM7Request extends MM7Message {
 	public void setRelayServerId(String relayServerId) {
 		this.relayServerId = relayServerId;
 	}
-	
+
 	public String getRelayServerId() {
 		return relayServerId;
 	}
-	
+
 	public void setSenderAddress(Address senderAddress) {
 		this.senderAddress = senderAddress;
 	}
-	
+
 	public Address getSenderAddress() {
 		return senderAddress;
 	}
-	
+
 	private Address senderAddress;
 	private String relayServerId;
 	private String vaspId;

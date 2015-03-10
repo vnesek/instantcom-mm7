@@ -111,7 +111,7 @@ public class MM7Response extends MM7Message {
 	public void load(Element element) {
 		super.load(element);
 
-		Element body = element.getChild("Body", JDOMSupport.ENVELOPE);
+		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element child = (Element) body.getChildren().get(0);
 
 		// Handle SOAP faults, status will be found in a Fault detail element

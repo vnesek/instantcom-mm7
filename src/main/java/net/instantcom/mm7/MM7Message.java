@@ -41,6 +41,8 @@ import org.jvnet.mimepull.MIMEPart;
 
 public class MM7Message implements JDOMSupport {
 
+	public static Namespace ENVELOPE = Namespace.getNamespace("env", "http://schemas.xmlsoap.org/soap/envelope/");
+
 	/**
 	 * Loads a correct subclass of a MM7 message by looking at a SOAP request
 	 * and instantiating an object of related class. Handles SOAP with
@@ -97,7 +99,7 @@ public class MM7Message implements JDOMSupport {
 		}
 		Document doc = soap.getDoc();
 
-		Element body = doc.getRootElement().getChild("Body", JDOMSupport.ENVELOPE);
+		Element body = doc.getRootElement().getChild("Body", ENVELOPE);
 		Element e = (Element) body.getChildren().get(0);
 		String message = e.getName();
 
@@ -166,19 +168,29 @@ public class MM7Message implements JDOMSupport {
 	}
 
 	public static void save(MM7Message mm7, OutputStream out, MM7Context ctx) throws IOException {
-		XMLOutputter xo = new XMLOutputter();
+		// Setup MM7 version and XML name space if not already set
+		if (mm7.getMm7Version() == null) {
+			mm7.setMm7Version(ctx.getMm7Version());
+		}
+		if (mm7.getNamespace() == null) {
+			mm7.setNamespace(ctx.getMm7Namespace());
+		}
+
+		final XMLOutputter xo = new XMLOutputter();
 		xo.setFormat(ctx.getJdomFormat());
-		Writer w = new OutputStreamWriter(out, "utf-8");
+		final Writer w = new OutputStreamWriter(out, "utf-8");
 
 		if (mm7.isMultipart()) {
-			Content content = ((HasContent) mm7).getContent();
+			final Content content = ((HasContent) mm7).getContent();
 
-			String boundary = mm7.getSoapBoundary();
+			final String boundary = mm7.getSoapBoundary();
 			w.write("--");
 			w.write(boundary);
-			w.write("\r\nContent-Type: text/xml; charset=\"utf-8\"\r\nContent-ID: <mm7-soap>\r\n\r\n");
+			w.write("\r\nContent-Type: text/xml; charset=\"utf-8\"\r\nContent-ID: <");
+			w.write(mm7.getSoapContentId());
+			w.write(">\r\n\r\n");
 
-			xo.output(mm7.toSOAP(), w);
+			xo.output(mm7.toSOAP(ctx), w);
 
 			w.write("\r\n--");
 			w.write(boundary);
@@ -189,7 +201,7 @@ public class MM7Message implements JDOMSupport {
 			w.write(boundary);
 			w.write("--");
 		} else {
-			xo.output(mm7.toSOAP(), w);
+			xo.output(mm7.toSOAP(ctx), w);
 		}
 		w.flush();
 	}
@@ -215,18 +227,6 @@ public class MM7Message implements JDOMSupport {
 		result.setContentId(part.getContentId());
 		result.setContentLocation(getContentLocation(part));
 		return result;
-	}
-
-	private static String getContentLocation(MIMEPart part) {
-		String result;
-		List<String> contentLocation = part.getHeader("Content-Location");
-		if (contentLocation != null) {
-			result = contentLocation.get(0);
-		} else {
-			result = null;
-		}
-		return result;
-
 	}
 
 	private static BasicContent fromStream(InputStream in, ContentType contentType) throws IOException {
@@ -271,8 +271,16 @@ public class MM7Message implements JDOMSupport {
 		return result;
 	}
 
-	public MM7Message() {
-		setNamespace("http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-6-7");
+	private static String getContentLocation(MIMEPart part) {
+		String result;
+		List<String> contentLocation = part.getHeader("Content-Location");
+		if (contentLocation != null) {
+			result = contentLocation.get(0);
+		} else {
+			result = null;
+		}
+		return result;
+
 	}
 
 	public String getMm7Version() {
@@ -280,7 +288,7 @@ public class MM7Message implements JDOMSupport {
 	}
 
 	public String getNamespace() {
-		return namespace.getURI();
+		return namespace != null? namespace.getURI() : null;
 	}
 
 	public String getSoapBoundary() {
@@ -290,11 +298,15 @@ public class MM7Message implements JDOMSupport {
 		return soapBoundary;
 	}
 
+	public String getSoapContentId() {
+		return soapContentId;
+	}
+
 	public String getSoapContentType() {
 		String contentType;
 		if (isMultipart()) {
-			contentType = "multipart/related; boundary=\"" + getSoapBoundary()
-					+ "\"; type=\"text/xml\"; start=\"<mm7-soap>\"";
+			contentType = "multipart/related; boundary=\"" + getSoapBoundary() + //
+					"\"; type=\"text/xml\"; start=\"<" + getSoapContentId() + ">\"";
 		} else {
 			contentType = "text/xml; charset=\"utf-8\"";
 		}
@@ -327,9 +339,13 @@ public class MM7Message implements JDOMSupport {
 			Element e = (Element) i.next();
 			Namespace ns = e.getNamespace();
 			if (ns != null && ns.getURI().contains("MM7")) {
-				namespace = ns;
+				this.namespace = ns;
 				break;
 			}
+		}
+
+		if (this.namespace == null) {
+			throw new IllegalStateException("can't autodetect MM7 namespace: " + body.toString());
 		}
 
 		Element header = element.getChild("Header", element.getNamespace());
@@ -339,7 +355,10 @@ public class MM7Message implements JDOMSupport {
 	@Override
 	public Element save(Element parent) {
 		Element e = new Element(getClass().getSimpleName(), namespace);
-		e.addContent(new Element("MM7Version", e.getNamespace()).setText(mm7Version));
+		final String mm7Version = getMm7Version();
+		if (mm7Version != null) {
+			e.addContent(new Element("MM7Version", e.getNamespace()).setText(mm7Version));
+		}
 		return e;
 	}
 
@@ -348,11 +367,15 @@ public class MM7Message implements JDOMSupport {
 	}
 
 	public void setNamespace(String namespace) {
-		this.namespace = Namespace.getNamespace("mm7", namespace);
+		this.namespace = namespace != null? Namespace.getNamespace(mm7NamespacePrefix, namespace) : null;
 	}
 
 	public void setSoapBoundary(String mimeBoundary) {
 		this.soapBoundary = mimeBoundary;
+	}
+
+	public void setSoapContentId(String soapContentId) {
+		this.soapContentId = soapContentId;
 	}
 
 	public void setTransactionId(String transactionId) {
@@ -362,7 +385,7 @@ public class MM7Message implements JDOMSupport {
 	@Override
 	public String toString() {
 		XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
-		Document doc = new Document(toSOAP());
+		Document doc = new Document(toSOAP(new MM7Context()));
 		StringWriter w = new StringWriter();
 		try {
 			out.output(doc, w);
@@ -372,24 +395,38 @@ public class MM7Message implements JDOMSupport {
 		}
 	}
 
-	private Element toSOAP() {
-		Element env = new Element("Envelope", JDOMSupport.ENVELOPE);
-		Element header = new Element("Header", JDOMSupport.ENVELOPE);
+	private Element toSOAP(MM7Context ctx) {
+		Element env = new Element("Envelope", ENVELOPE);
+		if (namespace != null) {
+			env.addNamespaceDeclaration(namespace);
+		}
+		Element header = new Element("Header", ENVELOPE);
 		if (transactionId != null) {
 			header.addContent(new Element("TransactionID", namespace) //
 					.setText(transactionId) //
-					.setAttribute("mustUnderstand", "1", JDOMSupport.ENVELOPE));
+					.setAttribute("mustUnderstand", "1", ENVELOPE));
 		}
 		env.addContent(header);
 
-		Element body = new Element("Body", JDOMSupport.ENVELOPE);
+		Element body = new Element("Body", ENVELOPE);
 		body.addContent(save(body));
 		env.addContent(body);
 		return env;
 	}
 
-	private String mm7Version = About.MM7_VERSION;
+	public void setMm7NamespacePrefix(String mm7NamespacePrefix) {
+		this.mm7NamespacePrefix = mm7NamespacePrefix;
+		setNamespace(getNamespace());
+	}
+
+	public String getMm7NamespacePrefix() {
+		return mm7NamespacePrefix;
+	}
+
 	Namespace namespace;
-	private String transactionId;
+	private String mm7Version;
+	private String mm7NamespacePrefix;
 	private String soapBoundary;
+	private String soapContentId = "mm7-soap";
+	private String transactionId;
 }

@@ -19,7 +19,6 @@
 package net.instantcom.mm7;
 
 import org.jdom2.Element;
-import org.jdom2.Namespace;
 
 interface JDOMSupport {
 
@@ -39,7 +38,5 @@ interface JDOMSupport {
 	 *            to load state from
 	 */
 	void load(Element element);
-
-	public static final Namespace ENVELOPE = Namespace.getNamespace("env", "http://schemas.xmlsoap.org/soap/envelope/");
 
 }

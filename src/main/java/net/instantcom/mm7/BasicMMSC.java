@@ -18,6 +18,7 @@
 
 package net.instantcom.mm7;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,20 +48,36 @@ public class BasicMMSC implements MMSC {
 
 	private MM7Response post(MM7Request request) throws MM7Error {
 		try {
-			URL u = new URL(getUrl());
-			HttpURLConnection conn = (HttpURLConnection) u.openConnection();
+			final MM7Context ctx = getContext();
+			final URL u = new URL(getUrl());
+			final HttpURLConnection conn = (HttpURLConnection) u.openConnection();
+
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 			conn.setUseCaches(false);
 
 			conn.setRequestProperty("Content-Type", request.getSoapContentType());
-			conn.setRequestProperty("User-Agent", getContext().getUserAgent());
+			conn.setRequestProperty("User-Agent", ctx.getUserAgent());
 			conn.setRequestProperty("Accept", "*/*");
 			conn.setRequestProperty("SOAPAction", "\"\"");
 
-			OutputStream out = conn.getOutputStream();
+			// HTTP Basic authorization
+			if (ctx.getUsername() != null) {
+				String authString = ctx.getUsername() + ':' + ctx.getPassword();
+				try {
+					ByteArrayOutputStream buffer = new ByteArrayOutputStream(128);
+					OutputStream buffer64 = ctx.newBase64OutputStream(buffer);
+					buffer64.write(authString.getBytes("iso-8859-1"));
+					buffer64.close();
+					conn.setRequestProperty("Authorization", "Basic " + buffer.toString("iso-8859-1"));
+				} catch (IOException ioe) {
+					throw new RuntimeException("Failed to add HTTP Basic Authorization header", ioe);
+				}
+			}
+
+			final OutputStream out = conn.getOutputStream();
 			try {
-				MM7Message.save(request, out, getContext());
+				MM7Message.save(request, out, ctx);
 			} finally {
 				out.close();
 			}
@@ -80,14 +97,15 @@ public class BasicMMSC implements MMSC {
 					}
 					return (MM7Response) MM7Message.load(in, contentType, getContext());
 				} else {
-					throw new MM7Error("unexpected content: " + conn.getResponseCode() + " "
-							+ conn.getResponseMessage() + "\n" + conn.getContent());
+					throw new MM7Error("unexpected content type: " + contentType + ", status: " + //
+							conn.getResponseCode() + " " + conn.getResponseMessage() + ", content: " + //
+							conn.getContent());
 				}
 			} finally {
 				conn.disconnect();
 			}
 		} catch (IOException ioe) {
-			throw new MM7Error("io error", ioe);
+			throw new MM7Error("IO error: " + ioe.getMessage());
 		}
 	}
 

@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -18,7 +18,21 @@
 
 package net.instantcom.mm7;
 
+import java.util.Map;
+
 public enum Priority {
 
-	NORMAL, HIGH, LOW;
+	NORMAL("Normal"), HIGH("High"), LOW("Low");
+	private Priority(String display) {
+		this.display = display;
+	}
+
+	@Override
+	public String toString() {
+		return display;
+	}
+
+	private final String display;
+
+	static final Map<String, ChargedParty> map = new StringToEnumMap<ChargedParty>(ChargedParty.values());
 }

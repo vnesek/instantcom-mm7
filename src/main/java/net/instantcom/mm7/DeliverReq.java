@@ -83,7 +83,7 @@ public class DeliverReq extends MM7Request implements HasContent {
 	public void load(Element element) {
 		super.load(element);
 
-		Element body = element.getChild("Body", JDOMSupport.ENVELOPE);
+		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element req = body.getChild("DeliverReq", namespace);
 
 		Element sender = req.getChild("Sender", namespace);

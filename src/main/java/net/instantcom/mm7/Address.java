@@ -9,7 +9,7 @@
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
  * https://raw.github.com/vnesek/instantcom-mm7/master/LICENSE.txt
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  * When distributing the software, include this License Header Notice in each
@@ -79,6 +79,12 @@ public class Address implements JDOMSupport {
 	public Address(String address, RecipientType recipientType) {
 		setAddress(address);
 		setRecipientType(recipientType);
+	}
+
+	public Address(String address, RecipientType recipientType, AddressType addressType) {
+		setAddress(address);
+		setRecipientType(recipientType);
+		setAddressType(addressType);
 	}
 
 	public String getAddress() {

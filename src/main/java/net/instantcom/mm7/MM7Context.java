@@ -62,8 +62,16 @@ public class MM7Context {
 		return mm7Version;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
 	public String getUserAgent() {
 		return userAgent;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 
 	public boolean isUseFirstContentFoundIfHrefIsInvalid() {
@@ -130,12 +138,20 @@ public class MM7Context {
 		this.mm7Version = mm7version;
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public void setUseFirstContentFoundIfHrefIsInvalid(boolean useFirstIfContentHrefIsInvalid) {
 		this.useFirstContentFoundIfHrefIsInvalid = useFirstIfContentHrefIsInvalid;
 	}
 
 	public void setUserAgent(String userAgent) {
 		this.userAgent = userAgent;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -156,6 +172,8 @@ public class MM7Context {
 	private MIMEConfig mimePullConfig;
 	private String mm7Namespace = About.MM7_NAMESPACE;
 	private String mm7Version = About.MM7_VERSION;
+	private String password;
 	private boolean useFirstContentFoundIfHrefIsInvalid = true;
 	private String userAgent = "InstantCom-MM7/" + About.VERSION;
+	private String username;
 }
