@@ -40,24 +40,28 @@ public class MM7Request extends MM7Message {
 
 	public Element save(Element parent) {
 		Element e = super.save(parent);
-		if (vaspId != null || vasId != null) {
-			Element si = new Element("SenderIdentification", e.getNamespace());
+
+		
 			if (vaspId != null) {
-				si.addContent(new Element("VASPID", e.getNamespace()).setText(vaspId));
+				e.addContent(new Element("VASPID", e.getNamespace()).setText(vaspId));
 			}
+			
 			if (vasId != null) {
-				si.addContent(new Element("VASID", e.getNamespace()).setText(vasId));
+				e.addContent(new Element("VASID", e.getNamespace()).setText(vasId));
 			}
+			
 			if (senderAddress != null) {
 				Element sa = new Element("SenderAddress", e.getNamespace());
-				si.addContent(sa);
+				e.addContent(sa);
 				if (senderAddress.getAddressType() != null) {
 					sa.addContent(senderAddress.save(sa));
 				} else {
 					sa.addContent(senderAddress.getAddress());
 				}
 			}
-			e.addContent(si);
+			
+		if(relayServerId != null){
+			e.addContent(new Element("MMSRelayServerID", e.getNamespace()).setText(relayServerId));
 		}
 		return e;
 	}

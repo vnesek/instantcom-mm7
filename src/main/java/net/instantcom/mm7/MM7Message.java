@@ -62,7 +62,7 @@ public class MM7Message implements JDOMSupport {
 	 * @throws MM7Error
 	 *             if SOAP fault is received.
 	 */
-	public static MM7Message load(InputStream in, String contentType, MM7Context ctx) throws IOException, MM7Error {
+	public static MM7Message load(InputStream in, String contentType, MM7Context ctxx) throws IOException, MM7Error {
 		ContentType ct = new ContentType(contentType);
 		BasicContent content = fromStream(in, ct);
 		SoapContent soap = null;
@@ -121,7 +121,13 @@ public class MM7Message implements JDOMSupport {
 			// Set content if any
 			if (content.getParts() != null && mm7 instanceof HasContent) {
 				Element contentElement = e.getChild("Content", e.getNamespace());
-				String href = contentElement.getAttributeValue("href", contentElement.getNamespace());
+				String href = null;
+				if(contentElement!=null){
+					href = contentElement.getAttributeValue("href", contentElement.getNamespace());
+				}else{
+					contentElement = e.getChild("Content", e.getNamespace());
+				}
+					
 				if (href == null) {
 					href = contentElement.getAttributeValue("href");
 				}
@@ -250,7 +256,7 @@ public class MM7Message implements JDOMSupport {
 				}
 				content.setContentId(part.getContentId());
 				content.setContentLocation(getContentLocation(part));
-				content.setContentType(part.getContentType());
+				//content.setContentType(part.getContentType());
 				contents.add(content);
 			}
 			result = new BasicContent(contents);
@@ -267,7 +273,6 @@ public class MM7Message implements JDOMSupport {
 		} else {
 			result = new BinaryContent(contentType.getMimeType(), in);
 		}
-		result.setContentType(contentType.getMimeType());
 		return result;
 	}
 
