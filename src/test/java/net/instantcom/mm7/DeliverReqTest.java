@@ -22,9 +22,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -43,7 +46,6 @@ public class DeliverReqTest {
 		String ct = "multipart/related; boundary=\"NextPart_000_0125_01C19839.7237929064\"; type=text/xml";
 		InputStream in = DeliverReq.class.getResourceAsStream("deliver-req2.txt");
 		DeliverReq req = (DeliverReq) MM7Response.load(in, ct, new MM7Context());
-		MM7Message.save(req, System.out, new MM7Context());
 		ByteArrayOutputStream byteos = new ByteArrayOutputStream();
 		MM7Message.save(req, byteos, new MM7Context());
 		
@@ -75,6 +77,30 @@ public class DeliverReqTest {
 		assertEquals("+381600001200", req.getSender().toString());
 		assertEquals("(no subject)", req.getSubject());
 		assertEquals(Priority.NORMAL, req.getPriority());
+	}
+	
+	@Test
+	public void readCaiXinDatafromHW() throws IOException, MM7Error {
+		String ct = "multipart/related; boundary=\"--NextPart_0_9094_20600\"; type=text/xml";
+		InputStream in = DeliverReq.class.getResourceAsStream("caixin.txt");
+		DeliverReq req = (DeliverReq) MM7Response.load(in, ct, new MM7Context());
+		
+		
+		for(Content c : req.getContent()){
+			ContentType ctype = new ContentType(c.getContentType());
+			if(ctype.getPrimaryType().equals("image")){
+				BinaryContent image = (BinaryContent)c;
+				String fileName = DeliverReq.class.getResource("caixin.txt").getFile()+".jpg";
+				System.out.println(fileName);
+				Base64 base64 = new Base64();
+				FileUtils.writeByteArrayToFile(new File(fileName), base64.encode(image.getData()));
+			}
+		}
+		ByteArrayOutputStream byteos = new ByteArrayOutputStream();
+		MM7Message.save(req, byteos, new MM7Context());
+		
+		req = (DeliverReq) MM7Response.load(new ByteArrayInputStream(byteos.toByteArray()), req.getSoapContentType(), new MM7Context());
+		assertEquals("+8618703815655", req.getSender().toString());
 	}
 	
 	@Test
