@@ -80,7 +80,6 @@ public class DeliverReqTest {
 		String ct = "multipart/related; boundary=\"--NextPart_0_9094_20600\"; type=text/xml";
 		InputStream in = DeliverReq.class.getResourceAsStream("caixin.txt");
 		DeliverReq req = (DeliverReq) MM7Response.load(in, ct, new MM7Context());
-		MM7Message.save(req, System.out, new MM7Context());
 
 
 		DefaultHttpClient httpclient = new DefaultHttpClient();
@@ -132,6 +131,7 @@ public class DeliverReqTest {
 		assertEquals("13951900000", req.getSender().toString());
 		assertEquals("This is a test", req.getSubject());
 		assertEquals(Priority.LOW, req.getPriority());
+		
 		
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		HttpPost post = null ;
