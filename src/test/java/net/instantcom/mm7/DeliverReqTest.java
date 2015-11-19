@@ -84,9 +84,26 @@ public class DeliverReqTest {
 		String ct = "multipart/related; boundary=\"--NextPart_0_9094_20600\"; type=text/xml";
 		InputStream in = DeliverReq.class.getResourceAsStream("caixin.txt");
 		DeliverReq req = (DeliverReq) MM7Response.load(in, ct, new MM7Context());
+		MM7Message.save(req, System.out, new MM7Context());
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+		HttpPost post = null ;
+		try{
+			post = new HttpPost("http://127.0.0.1:8080/mm7serv/10085receiver");
+			//post = new HttpPost("http://42.96.185.95:8765");
+			post.addHeader("Content-Type", req.getSoapContentType());
+			post.addHeader("SOAPAction", "");
+			ByteArrayOutputStream byteos = new ByteArrayOutputStream();
+			MM7Message.save(req, byteos, new MM7Context());
+			post.setEntity(new ByteArrayEntity(byteos.toByteArray()));
+			HttpResponse resp = httpclient.execute(post);
+			HttpEntity entity = resp.getEntity();
+			String message = EntityUtils.toString(entity, "utf-8");
+			System.out.println(message);
+		}finally{
+			if(post!=null)	post.releaseConnection();
+		}
 		
-		
-		for(Content c : req.getContent()){
+	/*	for(Content c : req.getContent()){
 			ContentType ctype = new ContentType(c.getContentType());
 			if(ctype.getPrimaryType().equals("image")){
 				BinaryContent image = (BinaryContent)c;
@@ -100,7 +117,7 @@ public class DeliverReqTest {
 		MM7Message.save(req, byteos, new MM7Context());
 		
 		req = (DeliverReq) MM7Response.load(new ByteArrayInputStream(byteos.toByteArray()), req.getSoapContentType(), new MM7Context());
-		assertEquals("+8618703815655", req.getSender().toString());
+		assertEquals("+8618703815655", req.getSender().toString());*/
 	}
 	
 	@Test

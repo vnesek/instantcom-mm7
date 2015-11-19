@@ -127,11 +127,12 @@ public class DeliverReq extends MM7Request implements HasContent {
 		if(sender!=null){
 			Element sa = new Element("Sender", e.getNamespace());
 			e.addContent(sa);
-			if (sender.getAddressType() != null) {
-				sa.addContent(sender.save(sa));
-			} else {
-				sa.addContent(sender.getAddress());
-			}
+//			if (sender.getAddressType() != null) {
+//				sa.addContent(sender.save(sa));
+//			} else {
+//				sa.addContent(sender.getAddress());
+//			}
+			sa.addContent(sender.getAddress());
 		}
 
 		if(linkedId!=null){
