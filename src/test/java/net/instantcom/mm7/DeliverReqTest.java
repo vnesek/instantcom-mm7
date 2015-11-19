@@ -106,7 +106,7 @@ public class DeliverReqTest {
 		DeliverReq req = (DeliverReq) MM7Response.load(in, ct, new MM7Context());
 		ByteArrayOutputStream byteos = new ByteArrayOutputStream();
 		MM7Message.save(req, byteos, new MM7Context());
-		MM7Message.save(req, System.out, new MM7Context());
+		
 		req = (DeliverReq) MM7Response.load(new ByteArrayInputStream(byteos.toByteArray()), req.getSoapContentType(), new MM7Context());
 		assertEquals(null, req.getVasId());
 		assertEquals("910000", req.getRelayServerId());
