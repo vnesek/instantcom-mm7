@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.instantcom.mm7.Address.RecipientType;
+
 import org.jdom2.Content.CType;
 import org.jdom2.Element;
 
@@ -46,10 +48,6 @@ public class DeliverReq extends MM7Request implements HasContent {
 
 	public Priority getPriority() {
 		return priority;
-	}
-
-	public List<Address> getRecipients() {
-		return recipients;
 	}
 
 	public String getRecipientSPI() {
@@ -86,7 +84,7 @@ public class DeliverReq extends MM7Request implements HasContent {
 
 		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element req = body.getChild("DeliverReq", namespace);
-
+		
 		Element sender = req.getChild("Sender", namespace);
 		
 		if (sender != null ) {
@@ -122,16 +120,19 @@ public class DeliverReq extends MM7Request implements HasContent {
 	
 	public Element save(Element parent) {
 		Element e = super.save(parent);
-		e.setName("DeliverReq");
+		//e.setName("DeliverReq");
 		
 		if(sender!=null){
 			Element sa = new Element("Sender", e.getNamespace());
 			e.addContent(sa);
+			/*
 			if (sender.getAddressType() != null) {
 				sa.addContent(sender.save(sa));
 			} else {
 				sa.addContent(sender.getAddress());
 			}
+			*/
+			sa.addContent(sender.getAddress());
 		}
 
 		if(linkedId!=null){
@@ -194,9 +195,6 @@ public class DeliverReq extends MM7Request implements HasContent {
 		this.priority = priority;
 	}
 
-	public void setRecipients(List<Address> recipients) {
-		this.recipients = recipients;
-	}
 
 	public void setRecipientSPI(String recipientSPI) {
 		this.recipientSPI = recipientSPI;
@@ -238,7 +236,6 @@ public class DeliverReq extends MM7Request implements HasContent {
 
 	private Address sender;
 	private String linkedId;
-	private List<Address> recipients = new ArrayList<Address>();
 	// private PreviouslySentBy previouslySentBy;
 	private String senderSPI;
 	private String recipientSPI;

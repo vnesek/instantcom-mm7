@@ -46,10 +46,14 @@ public class Address implements JDOMSupport {
 		public String toString() {
 			return display;
 		}
+		
+		public AddressType valuesOf(String key) {
+			return map.get(key);
+		}
 
 		private final String display;
 
-		public static final Map<String, AddressType> map = new StringToEnumMap<AddressType>(AddressType.values());
+		private static final Map<String, AddressType> map = new StringToEnumMap<AddressType>(AddressType.values());
 	}
 
 	public enum RecipientType {
@@ -63,10 +67,14 @@ public class Address implements JDOMSupport {
 		public String toString() {
 			return display;
 		}
+		
+		public static RecipientType valuesOf(String key) {
+			return map.get(key);
+		}
 
 		private final String display;
 
-		public static final Map<String, RecipientType> map = new StringToEnumMap<RecipientType>(RecipientType.values());
+		private static final Map<String, RecipientType> map = new StringToEnumMap<RecipientType>(RecipientType.values());
 	};
 
 	public Address() {

@@ -355,11 +355,14 @@ public class MM7Message implements JDOMSupport {
 
 		Element header = element.getChild("Header", element.getNamespace());
 		setTransactionId(header.getChildTextTrim("TransactionID", namespace));
+		Element req = (Element) body.getChildren().get(0);
+		setMm7Version(req.getChildTextTrim("MM7Version", req.getNamespace()));
 	}
 
 	@Override
 	public Element save(Element parent) {
 		Element e = new Element(getClass().getSimpleName(), namespace);
+		e.addNamespaceDeclaration(namespace);
 		final String mm7Version = getMm7Version();
 		if (mm7Version != null) {
 			e.addContent(new Element("MM7Version", e.getNamespace()).setText(mm7Version));
@@ -402,14 +405,18 @@ public class MM7Message implements JDOMSupport {
 
 	private Element toSOAP(MM7Context ctx) {
 		Element env = new Element("Envelope", ENVELOPE);
-		if (namespace != null) {
-			env.addNamespaceDeclaration(namespace);
-		}
+		
 		Element header = new Element("Header", ENVELOPE);
 		if (transactionId != null) {
-			header.addContent(new Element("TransactionID", namespace) //
-					.setText(transactionId) //
-					.setAttribute("mustUnderstand", "1", ENVELOPE));
+			Element transactionID = new Element("TransactionID", namespace) //
+			.setText(transactionId) //
+			.setAttribute("mustUnderstand", "1", ENVELOPE);
+			
+			if (namespace != null) {
+				transactionID.addNamespaceDeclaration(namespace);
+			}
+			
+			header.addContent(transactionID);
 		}
 		env.addContent(header);
 

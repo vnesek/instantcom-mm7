@@ -56,10 +56,6 @@ public class DeliverReqTest {
 		assertEquals("97254265781@OMMS.com", req.getSender().toString());
 		assertEquals("Weather Forecast", req.getSubject());
 		assertEquals(Priority.NORMAL, req.getPriority());
-		
-
-		
-		
 	}
 
 	@Test
@@ -84,7 +80,7 @@ public class DeliverReqTest {
 		String ct = "multipart/related; boundary=\"--NextPart_0_9094_20600\"; type=text/xml";
 		InputStream in = DeliverReq.class.getResourceAsStream("caixin.txt");
 		DeliverReq req = (DeliverReq) MM7Response.load(in, ct, new MM7Context());
-		
+		MM7Message.save(req, System.out, new MM7Context());
 		
 		for(Content c : req.getContent()){
 			ContentType ctype = new ContentType(c.getContentType());
@@ -110,7 +106,7 @@ public class DeliverReqTest {
 		DeliverReq req = (DeliverReq) MM7Response.load(in, ct, new MM7Context());
 		ByteArrayOutputStream byteos = new ByteArrayOutputStream();
 		MM7Message.save(req, byteos, new MM7Context());
-		
+		MM7Message.save(req, System.out, new MM7Context());
 		req = (DeliverReq) MM7Response.load(new ByteArrayInputStream(byteos.toByteArray()), req.getSoapContentType(), new MM7Context());
 		assertEquals(null, req.getVasId());
 		assertEquals("910000", req.getRelayServerId());
