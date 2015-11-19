@@ -195,7 +195,7 @@ public class MM7Message implements JDOMSupport {
 			w.write("\r\nContent-Type: text/xml; charset=\"utf-8\"\r\nContent-ID: <");
 			w.write(mm7.getSoapContentId());
 			w.write(">\r\n\r\n");
-
+			w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 			xo.output(mm7.toSOAP(ctx), w);
 
 			w.write("\r\n--");

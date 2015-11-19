@@ -81,11 +81,10 @@ public class DeliverReqTest {
 		InputStream in = DeliverReq.class.getResourceAsStream("caixin.txt");
 		DeliverReq req = (DeliverReq) MM7Response.load(in, ct, new MM7Context());
 
-
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		HttpPost post = null ;
 		try{
-			post = new HttpPost("http://127.0.0.1:8080/mm7serv/10085receiver");
+			post = new HttpPost("http://127.0.0.1:8081/mm7serv/10085receiver");
 			//post = new HttpPost("http://42.96.185.95:8765");
 			post.addHeader("Content-Type", req.getSoapContentType());
 			post.addHeader("SOAPAction", "");
