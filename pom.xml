@@ -88,6 +88,21 @@
 			<version>4.2.1</version>
 		</dependency>
 	</dependencies>
+		<repositories>
+		<repository>
+			<id>myRepository</id>
+			<name>Repository for me</name>
+			<url>http://221.176.67.103:25000/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>http://repo.maven.apache.org/maven2</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<pluginManagement>
