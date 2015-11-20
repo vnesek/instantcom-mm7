@@ -4,7 +4,9 @@ Content-Type:text/xml;charset="UTF-8"
 Content-Transfer-Encoding:8bit
 Content-ID:</tnn-200102/mm7-vasp>
 
-<?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"><env:Header><mm7:TransactionID xmlns:mm7="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-0" env:mustUnderstand="1">1220000002841151119175558001</mm7:TransactionID></env:Header><env:Body><DeliverReq xmlns="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-0"><MM7Version>6.3.0</MM7Version><Sender>+8618703815655</Sender><Recipients><To><Number>10085</Number></To></Recipients><TimeStamp>2015-11-19T17:55:58+08:00</TimeStamp><Priority>High</Priority><MMSRelayServerID>910062</MMSRelayServerID><Content href="cid:defaultID"></Content></DeliverReq></env:Body></env:Envelope>
+<?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"><env:Header><mm7:TransactionID xmlns:mm7="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-0" env:mustUnderstand="1">1220000002841151119175558001</mm7:TransactionID></env:Header><env:Body><DeliverReq xmlns="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-0"><MM7Version>6.3.0</MM7Version><Sender>+8618703815655</Sender><Recipients><To><Number>10085</Number></To></Recipients><TimeStamp>2015-11-19T17:55:58+08:00</TimeStamp><Priority>High</Priority><MMSRelayServerID>910062</MMSRelayServerID>
+<Subject>Weather Forecast</Subject>
+<Content href="cid:defaultID"></Content></DeliverReq></env:Body></env:Envelope>
 ----NextPart_0_9094_20600
 Content-Type:multipart/related;start="<smil>";type="application/smil";boundary="SubPart_1_5688_66819"
 Content-ID:defaultID
@@ -19,7 +21,7 @@ Content-Transfer-Encoding: 8bit
 
 --SubPart_1_5688_66819
 Content-Type:image/jpeg;name="1447137257000.jpg"
-Content-ID:<1447137257000>
+Content-ID:<144713725700c>
 Content-Location:1447137257000.jpg
 Content-Transfer-Encoding: 8bit
 

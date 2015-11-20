@@ -18,11 +18,15 @@
 
 package net.instantcom.mm7;
 
+import java.io.IOException;
 import java.io.InputStream;
+
+import org.junit.Test;
 
 public class SubmitRspSample {
 
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void test() throws IOException, MM7Error {
 		InputStream in = SubmitRspSample.class.getResourceAsStream("submit-rsp.xml");
 
 		SubmitRsp rsp = (SubmitRsp) MM7Response.load(in, "text/xml", new MM7Context());

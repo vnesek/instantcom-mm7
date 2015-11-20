@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -95,11 +96,13 @@ public class DeliverReqTest {
 			HttpEntity entity = resp.getEntity();
 			String message = EntityUtils.toString(entity, "utf-8");
 			System.out.println(message);
+		}catch(Exception e){
+			
 		}finally{
 			if(post!=null)	post.releaseConnection();
 		}
 		
-	/*	for(Content c : req.getContent()){
+	for(Content c : req.getContent()){
 			ContentType ctype = new ContentType(c.getContentType());
 			if(ctype.getPrimaryType().equals("image")){
 				BinaryContent image = (BinaryContent)c;
@@ -113,7 +116,7 @@ public class DeliverReqTest {
 		MM7Message.save(req, byteos, new MM7Context());
 		
 		req = (DeliverReq) MM7Response.load(new ByteArrayInputStream(byteos.toByteArray()), req.getSoapContentType(), new MM7Context());
-		assertEquals("+8618703815655", req.getSender().toString());*/
+		assertEquals("+8618703815655", req.getSender().toString());
 	}
 	
 	@Test
@@ -132,6 +135,10 @@ public class DeliverReqTest {
 		assertEquals(Priority.LOW, req.getPriority());
 		
 		
+		Content text = new TextContent("13951900000139519000001395190000013951900000");
+		req.getContent().addParts(text);
+		
+		MM7Message.save(req, System.out, new MM7Context());
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		HttpPost post = null ;
 		try{
@@ -145,7 +152,10 @@ public class DeliverReqTest {
 			HttpResponse resp = httpclient.execute(post);
 			HttpEntity entity = resp.getEntity();
 			String message = EntityUtils.toString(entity, "utf-8");
+			
 			System.out.println(message);
+		}catch(Exception e){
+			
 		}finally{
 			if(post!=null)	post.releaseConnection();
 		}

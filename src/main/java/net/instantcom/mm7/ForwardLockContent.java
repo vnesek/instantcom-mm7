@@ -47,8 +47,8 @@ public class ForwardLockContent implements Content {
 	}
 	
 	@Override
-	public List<Content> getParts() {
-		return null;
+	public void addParts(Content c) {
+		
 	}
 
 	@Override

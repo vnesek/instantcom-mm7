@@ -18,11 +18,16 @@
 
 package net.instantcom.mm7;
 
+import java.io.IOException;
+
+import org.junit.Test;
+
 import net.instantcom.mm7.Address.RecipientType;
 
 public class SubmitSample {
 
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void test() throws IOException, MM7Error {
 		String url = "http://localhost:2007/mmsc/mm7/MMSServiceSOAPPort";
 
 		SubmitReq sr = new SubmitReq();

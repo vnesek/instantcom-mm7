@@ -36,5 +36,5 @@ interface Content extends Iterable<Content> {
 	 * Returns a list of parts or null if content isn't multipart
 	 * @return a list of parts or null if content isn't multipart
 	 */
-	List<Content> getParts();
+	void addParts(Content content);
 }

@@ -28,6 +28,10 @@ import java.util.UUID;
 
 public class BasicContent implements Content {
 
+	public BasicContent(String contentType) {
+		this.contentType = contentType;
+	}
+	
 	public BasicContent() {
 	}
 
@@ -62,8 +66,68 @@ public class BasicContent implements Content {
 	}
 
 	@Override
-	public List<Content> getParts() {
-		return parts;
+	public void addParts(Content content) {
+		if(parts==null){
+			parts = new ArrayList<Content>(); 
+			this.boundary = "==Multipart==" + UUID.randomUUID().toString();
+		}
+			
+		parts.add(content);
+		
+		if (content.getContentType().contains("smil")) {
+			setContentType("multipart/related; start=\"<" + content.getContentId() + ">\"; type=\"" + content.getContentType()
+					+ "\"; boundary=\"" + boundary + "\"");
+		}else{
+			setContentType("multipart/mixed; boundary=\"" + boundary + "\"");
+		}
+	}
+	
+	public SoapContent findSoapContent(String start){
+		if(parts == null) return null;
+		if(start==null || "".equals(start)){
+			for (Content c : parts) {
+				if (c instanceof SoapContent) {
+					return (SoapContent) c;
+				}
+			}
+		}else{
+			for (Content c : parts) {
+				if (start.equals(c.getContentId())) {
+					return (SoapContent) c;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public Content findPayload(String contentId,String href){
+		Content payload = null;
+		if(parts == null) return null;
+		if(contentId==null || "".equals(contentId)){
+			for (Content c : parts) {
+				if (href.equals(c.getContentLocation())) {
+					payload =   c;
+					break;
+				}
+			}
+		}else{
+			for (Content c : parts) {
+				if (contentId.equals(c.getContentId())) {
+					payload =  c;
+					break;
+				}
+			}
+		}
+		
+		if (payload == null) {
+			for (Content c : parts) {
+				if (!(c instanceof SoapContent)) {
+					payload = c;
+					break;
+				}
+			}
+		}
+		return payload;
 	}
 
 	@Override
@@ -85,7 +149,7 @@ public class BasicContent implements Content {
 		this.contentLocation = contentLocation;
 	}
 
-	public void setContentType(String contentType) {
+	private void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
 
@@ -152,7 +216,7 @@ public class BasicContent implements Content {
 		b.append("\r\n");
 		out.write(b.toString().getBytes("iso-8859-1"));
 
-		for (Content c : getParts()) {
+		for (Content c : this.parts) {
 			b.setLength(0);
 			b.append("\r\n--");
 			b.append(boundary);
