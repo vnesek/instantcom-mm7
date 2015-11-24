@@ -19,29 +19,50 @@
 package net.instantcom.mm7;
 
 import java.io.IOException;
-
-import org.junit.Test;
+import java.io.InputStream;
+import java.util.Date;
 
 import net.instantcom.mm7.Address.RecipientType;
 
+import org.junit.Test;
+
 public class SubmitSample {
 
+	private static InputStream load(String file) {
+		return SubmitSample.class.getResourceAsStream(file);
+	}
+	/*
+	 * 
+./nc  221.176.2.121 8899 < submit.txt 
+
+./nc -l 8765 > submit.txt < rep.txt 
+
+*/
 	@Test
 	public void test() throws IOException, MM7Error {
-		String url = "http://localhost:2007/mmsc/mm7/MMSServiceSOAPPort";
+		String url = "http://42.96.185.95:8765";
 
 		SubmitReq sr = new SubmitReq();
-		sr.setVaspId("xxx_vaspid");
-		sr.setVasId("xxx_vasid");
-		sr.setSubject("Nice weather");
+		sr.setTransactionId(String.valueOf((new Date()).getTime()));
+		sr.setVaspId("400437");
+		sr.setVasId("10085");
+		sr.setSubject("MM7Test");
 		sr.setMessageClass(MessageClass.INFORMATIONAL);
 		sr.setServiceCode("7007");
-		sr.addRecipient(new Address("+385910000001", RecipientType.TO));
+		sr.addRecipient(new Address("+8618703815655", RecipientType.TO));
+		sr.setPriority(Priority.NORMAL);
+		sr.setSenderAddress(new Address("10085", RecipientType.TO));
+		sr.setChargedParty(ChargedParty.RECIPIENT);
 
 		// Add text content
+		
 		TextContent text = new TextContent("We got a real nice weather today.");
 		text.setContentId("text");
-		sr.setContent(text);
+		
+		BinaryContent image = new BinaryContent("image/jpeg", load("smrz.JPG"));
+		image.setContentId("image");
+		
+		sr.setContent(new BasicContent( image, text));
 
 		// Initialize MM7 client to MMSC
 		MMSC mmsc = new BasicMMSC(url);
@@ -49,7 +70,8 @@ public class SubmitSample {
 		mmsc.getContext().setMm7Version("5.3.0");
 
 		// Send a message
+		MM7Message.save(sr, System.out, new MM7Context());
 		SubmitRsp submitRsp = mmsc.submit(sr);
-		System.out.println(submitRsp);
+	    System.out.println(submitRsp);
 	}
 }
