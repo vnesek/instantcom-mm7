@@ -41,28 +41,30 @@ public class SubmitSample {
 	@Test
 	public void test() throws IOException, MM7Error {
 		String url = "http://42.96.185.95:8765";
-
+		Date time = new Date();
 		SubmitReq sr = new SubmitReq();
-		sr.setTransactionId(String.valueOf((new Date()).getTime()));
+		sr.setTransactionId(String.valueOf(time.getTime()));
 		sr.setVaspId("400437");
 		sr.setVasId("10085");
 		sr.setSubject("MM7Test");
-		sr.setMessageClass(MessageClass.INFORMATIONAL);
-		sr.setServiceCode("7007");
+		sr.setMessageClass(MessageClass.PERSONAL);
+		sr.setServiceCode("1992220101");
 		sr.addRecipient(new Address("+8618703815655", RecipientType.TO));
 		sr.setPriority(Priority.NORMAL);
-		sr.setSenderAddress(new Address("10085", RecipientType.TO));
-		sr.setChargedParty(ChargedParty.RECIPIENT);
-
+		sr.setSenderAddress(new Address("+8610085",null,null));
+		sr.setTimeStamp(time);
+		sr.setLinkedId("mms001");
+		sr.setDeliveryReport(true);
+		sr.setExpiryDate(new RelativeDate(new Date(time.getTime() + 7200L*1000)));
 		// Add text content
 		
-		TextContent text = new TextContent("We got a real nice weather today.");
+		TextContent text = new TextContent("中移在线彩信测试");
 		text.setContentId("text");
 		
-		BinaryContent image = new BinaryContent("image/jpeg", load("smrz.JPG"));
-		image.setContentId("image");
+		//BinaryContent image = new BinaryContent("image/jpeg", load("smrz.JPG"));
+		//image.setContentId("image");
 		
-		sr.setContent(new BasicContent( image, text));
+		sr.setContent(new BasicContent( text, text));
 
 		// Initialize MM7 client to MMSC
 		MMSC mmsc = new BasicMMSC(url);
@@ -71,7 +73,6 @@ public class SubmitSample {
 
 		// Send a message
 		MM7Message.save(sr, System.out, new MM7Context());
-		SubmitRsp submitRsp = mmsc.submit(sr);
-	    System.out.println(submitRsp);
+		//SubmitRsp submitRsp = mmsc.submit(sr);	    System.out.println(submitRsp);
 	}
 }

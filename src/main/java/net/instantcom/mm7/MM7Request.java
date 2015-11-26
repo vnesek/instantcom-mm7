@@ -55,24 +55,25 @@ public class MM7Request extends MM7Message {
 					e.addContent(r);
 				}
 			}
-
+			Element senderIdentification =new Element("SenderIdentification", e.getNamespace());
 			if (vaspId != null) {
-				e.addContent(new Element("VASPID", e.getNamespace()).setText(vaspId));
+				senderIdentification.addContent(new Element("VASPID", e.getNamespace()).setText(vaspId));
 			}
 			
 			if (vasId != null) {
-				e.addContent(new Element("VASID", e.getNamespace()).setText(vasId));
+				senderIdentification.addContent(new Element("VASID", e.getNamespace()).setText(vasId));
 			}
 			
 			if (senderAddress != null) {
 				Element sa = new Element("SenderAddress", e.getNamespace());
-				e.addContent(sa);
+				senderIdentification.addContent(sa);
 				if (senderAddress.getAddressType() != null) {
 					sa.addContent(senderAddress.save(sa));
 				} else {
 					sa.addContent(senderAddress.getAddress());
 				}
 			}
+			e.addContent(senderIdentification);
 			
 		if(relayServerId != null){
 			e.addContent(new Element("MMSRelayServerID", e.getNamespace()).setText(relayServerId));
