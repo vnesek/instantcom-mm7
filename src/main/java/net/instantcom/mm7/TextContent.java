@@ -28,8 +28,9 @@ public class TextContent extends BasicContent {
 	}
 
 	public TextContent(String text) {
+		
+		super("text/plain; charset=\"utf-8\"");
 		setText(text);
-		setContentType("text/plain; charset=\"utf-8\"");
 	}
 
 	public String getText() {

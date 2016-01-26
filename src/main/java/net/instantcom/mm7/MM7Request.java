@@ -18,6 +18,11 @@
 
 package net.instantcom.mm7;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.instantcom.mm7.Address.RecipientType;
+
 import org.jdom2.Element;
 
 public class MM7Request extends MM7Message {
@@ -40,24 +45,38 @@ public class MM7Request extends MM7Message {
 
 	public Element save(Element parent) {
 		Element e = super.save(parent);
-		if (vaspId != null || vasId != null) {
-			Element si = new Element("SenderIdentification", e.getNamespace());
+
+			if (!recipients.isEmpty()) {
+				Element r = new Element("Recipients", e.getNamespace());
+				addRecipients(r, RecipientType.TO);
+				addRecipients(r, RecipientType.CC);
+				addRecipients(r, RecipientType.BCC);
+				if (r.getContentSize() > 0) {
+					e.addContent(r);
+				}
+			}
+			Element senderIdentification =new Element("SenderIdentification", e.getNamespace());
 			if (vaspId != null) {
-				si.addContent(new Element("VASPID", e.getNamespace()).setText(vaspId));
+				senderIdentification.addContent(new Element("VASPID", e.getNamespace()).setText(vaspId));
 			}
+			
 			if (vasId != null) {
-				si.addContent(new Element("VASID", e.getNamespace()).setText(vasId));
+				senderIdentification.addContent(new Element("VASID", e.getNamespace()).setText(vasId));
 			}
+			
 			if (senderAddress != null) {
 				Element sa = new Element("SenderAddress", e.getNamespace());
-				si.addContent(sa);
+				senderIdentification.addContent(sa);
 				if (senderAddress.getAddressType() != null) {
 					sa.addContent(senderAddress.save(sa));
 				} else {
 					sa.addContent(senderAddress.getAddress());
 				}
 			}
-			e.addContent(si);
+			e.addContent(senderIdentification);
+			
+		if(relayServerId != null){
+			e.addContent(new Element("MMSRelayServerID", e.getNamespace()).setText(relayServerId));
 		}
 		return e;
 	}
@@ -72,6 +91,20 @@ public class MM7Request extends MM7Message {
 
 		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element req = (Element) body.getChildren().get(0);
+		Element recipients =  req.getChild("Recipients",req.getNamespace());
+		
+		if(recipients != null && recipients.getChildren()!=null && recipients.getChildren().size() > 0){
+			
+			List<Element> addrList = recipients.getChildren();
+			for(Element addr:addrList){
+				RecipientType rtype = RecipientType.valuesOf(addr.getName());
+				Address a = new Address();
+				a.load((Element) addr.getChildren().get(0));
+				a.setRecipientType(rtype);
+				this.recipients.add(a);	
+			}
+		}
+		
 		setVasId(req.getChildTextTrim("VASID", req.getNamespace()));
 		setVaspId(req.getChildTextTrim("VASPID", req.getNamespace()));
 		setRelayServerId(req.getChildTextTrim("MMSRelayServerID", req.getNamespace()));
@@ -92,7 +125,29 @@ public class MM7Request extends MM7Message {
 	public Address getSenderAddress() {
 		return senderAddress;
 	}
-
+	public void setRecipients(List<Address> recipients) {
+		this.recipients = recipients;
+	}
+	public List<Address> getRecipients() {
+		return recipients;
+	}
+	
+	public void addRecipient(Address a) {
+		
+		recipients.add(a);
+	}
+	private void addRecipients(Element e, Address.RecipientType recipientType) {
+		Element r = new Element(recipientType.toString(), e.getNamespace());
+		for (Address a : recipients) {
+			if (a.getRecipientType().equals(recipientType)) {
+				r.addContent(a.save(e));
+			}
+		}
+		if (r.getContentSize() > 0) {
+			e.addContent(r);
+		}
+	}
+	private List<Address> recipients = new ArrayList<Address>();
 	private Address senderAddress;
 	private String relayServerId;
 	private String vaspId;

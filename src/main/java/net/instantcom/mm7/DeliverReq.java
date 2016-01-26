@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.instantcom.mm7.Address.RecipientType;
+
+import org.jdom2.Content.CType;
 import org.jdom2.Element;
 
 public class DeliverReq extends MM7Request implements HasContent {
@@ -45,10 +48,6 @@ public class DeliverReq extends MM7Request implements HasContent {
 
 	public Priority getPriority() {
 		return priority;
-	}
-
-	public List<Address> getRecipients() {
-		return recipients;
 	}
 
 	public String getRecipientSPI() {
@@ -85,12 +84,18 @@ public class DeliverReq extends MM7Request implements HasContent {
 
 		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element req = body.getChild("DeliverReq", namespace);
-
+		
 		Element sender = req.getChild("Sender", namespace);
-		if (sender != null) {
-			Address a = new Address();
-			a.load((Element) sender.getChildren().get(0));
-			setSender(a);
+		
+		if (sender != null ) {
+			if(sender.getChildren()!=null && sender.getChildren().size() > 0){
+				Address a = new Address();
+				a.load((Element) sender.getChildren().get(0));
+				setSender(a);
+			}else{
+				setSender(new Address(sender.getTextTrim()));
+			}
+			
 		} else {
 			setSender(null);
 		}
@@ -103,9 +108,72 @@ public class DeliverReq extends MM7Request implements HasContent {
 		setApplicId(req.getChildTextTrim("ApplicID", namespace));
 		setReplyApplicId(req.getChildTextTrim("ReplyApplicID", namespace));
 		setAuxApplicInfo(req.getChildTextTrim("AuxApplicInfo", namespace));
-		setPriority(Priority.valueOf(req.getChildTextTrim("Priority", namespace).toUpperCase()));
+		if(req.getChildTextTrim("Priority", namespace) == null || "".equals(req.getChildTextTrim("Priority", namespace))){
+			setPriority(Priority.HIGH);
+		}else{
+			setPriority(Priority.valueOf(req.getChildTextTrim("Priority", namespace).toUpperCase()));
+		}
+		
 		setTimeStamp(new RelativeDate(req.getChildTextTrim("TimeStamp", namespace)).toDate());
 
+	}
+	
+	public Element save(Element parent) {
+		Element e = super.save(parent);
+		//e.setName("DeliverReq");
+		
+		if(sender!=null){
+			Element sa = new Element("Sender", e.getNamespace());
+			e.addContent(sa);
+
+			/*
+			if (sender.getAddressType() != null) {
+				sa.addContent(sender.save(sa));
+			} else {
+				sa.addContent(sender.getAddress());
+			}
+			*/
+
+			sa.addContent(sender.getAddress());
+		}
+
+		if(linkedId!=null){
+			e.addContent(new Element("LinkedID", e.getNamespace()).setText(linkedId));
+		}
+		if(senderSPI!=null){
+			e.addContent(new Element("SenderSPI", e.getNamespace()).setText(senderSPI));
+		}
+		if(recipientSPI!=null){
+			e.addContent(new Element("RecipientSPI", e.getNamespace()).setText(recipientSPI));
+		}
+		if(replyChargingId!=null){
+			e.addContent(new Element("ReplyChargingID", e.getNamespace()).setText(replyChargingId));
+		}
+		if(Subject!=null){
+			e.addContent(new Element("Subject", e.getNamespace()).setText(Subject));
+		}
+		if(applicId!=null){
+			e.addContent(new Element("ApplicID", e.getNamespace()).setText(applicId));
+		}
+		if(replyApplicId!=null){
+			e.addContent(new Element("ReplyApplicID", e.getNamespace()).setText(replyApplicId));
+		}
+		if(auxApplicInfo!=null){
+			e.addContent(new Element("AuxApplicInfo", e.getNamespace()).setText(auxApplicInfo));
+		}
+		if(priority!=null){
+			e.addContent(new Element("Priority", e.getNamespace()).setText(priority.toString()));
+		}
+		if(timeStamp!=null){
+			e.addContent(new Element("TimeStamp", e.getNamespace()).setText(new RelativeDate(timeStamp).toString()));
+		}
+		if (content != null) {
+			Element c = new Element("Content", e.getNamespace());
+			c.setAttribute("href", "cid:mm7-content");
+			e.addContent(c);
+		}
+		
+		return e;
 	}
 
 	public void setApplicId(String applicId) {
@@ -129,9 +197,6 @@ public class DeliverReq extends MM7Request implements HasContent {
 		this.priority = priority;
 	}
 
-	public void setRecipients(List<Address> recipients) {
-		this.recipients = recipients;
-	}
 
 	public void setRecipientSPI(String recipientSPI) {
 		this.recipientSPI = recipientSPI;
@@ -173,7 +238,6 @@ public class DeliverReq extends MM7Request implements HasContent {
 
 	private Address sender;
 	private String linkedId;
-	private List<Address> recipients = new ArrayList<Address>();
 	// private PreviouslySentBy previouslySentBy;
 	private String senderSPI;
 	private String recipientSPI;

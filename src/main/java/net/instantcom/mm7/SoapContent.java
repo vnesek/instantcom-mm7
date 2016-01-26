@@ -30,7 +30,7 @@ import org.jdom2.output.XMLOutputter;
 class SoapContent extends BasicContent {
 
 	public SoapContent(InputStream in) throws IOException {
-		setContentType("text/xml; charset=\"utf-8\"");
+		super("text/xml; charset=\"utf-8\"");
 		try {
 			this.doc = new SAXBuilder().build(in);
 		} catch (JDOMException e) {

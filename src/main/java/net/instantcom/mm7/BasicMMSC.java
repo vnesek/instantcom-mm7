@@ -77,6 +77,7 @@ public class BasicMMSC implements MMSC {
 
 			final OutputStream out = conn.getOutputStream();
 			try {
+
 				MM7Message.save(request, out, ctx);
 			} finally {
 				out.close();

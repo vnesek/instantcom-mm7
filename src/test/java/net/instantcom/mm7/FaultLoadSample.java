@@ -18,11 +18,17 @@
 
 package net.instantcom.mm7;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.InputStream;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class FaultLoadSample {
 
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void test() throws Exception {
 		InputStream is = FaultLoadSample.class.getResourceAsStream("fault.xml");
 
 		try {
@@ -31,6 +37,7 @@ public class FaultLoadSample {
 			System.out.println(e.getResponse());
 			System.out.println("=== Complete SOAP body ===");
 			System.out.println(e);
+			Assert.assertTrue(true);
 		}
 	}
 }

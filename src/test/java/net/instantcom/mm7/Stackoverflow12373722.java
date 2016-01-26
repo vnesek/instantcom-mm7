@@ -22,6 +22,8 @@ import java.io.InputStream;
 
 import net.instantcom.mm7.Address.RecipientType;
 
+import org.junit.Test;
+
 /**
  * Answer to <a href=
  * "http://stackoverflow.com/questions/12373744/generating-mm7-soap-request-in-java"
@@ -32,8 +34,8 @@ public class Stackoverflow12373722 {
 	private static InputStream load(String file) {
 		return Stackoverflow12373722.class.getResourceAsStream(file);
 	}
-
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void test() throws Exception {
 		SubmitReq sr = new SubmitReq();
 		sr.setNamespace("http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-5-MM7-1-2");
 		sr.setMm7Version("5.3.0");

@@ -62,41 +62,30 @@ public class MM7Message implements JDOMSupport {
 	 * @throws MM7Error
 	 *             if SOAP fault is received.
 	 */
-	public static MM7Message load(InputStream in, String contentType, MM7Context ctx) throws IOException, MM7Error {
+	public static MM7Message load(InputStream in, String contentType, MM7Context ctxx) throws IOException, MM7Error {
 		ContentType ct = new ContentType(contentType);
 		BasicContent content = fromStream(in, ct);
-		SoapContent soap = null;
-		if (content.getParts() != null) {
-			String start = (String) ct.getParameter("start");
-			if (start != null) {
-				if (start.length() == 0) {
-					throw new MM7Error("invalid content type, start parameter is empty: " + contentType);
-				}
-				if (start.charAt(0) == '<') {
-					start = start.substring(1, start.length() - 1);
-				}
-				for (Content c : content.getParts()) {
-					if (start.equals(c.getContentId())) {
-						soap = (SoapContent) c;
-						break;
-					}
-				}
-			} else {
-				for (Content c : content.getParts()) {
-					if (c instanceof SoapContent) {
-						soap = (SoapContent) c;
-						break;
-					}
-				}
+		String start = (String) ct.getParameter("start");
+		if (start != null) {
+			if (start.length() == 0) {
+				throw new MM7Error("invalid content type, start parameter is empty: " + contentType);
 			}
-		} else {
+			if (start.charAt(0) == '<') {
+				start = start.substring(1, start.length() - 1);
+			}
+		}
+		SoapContent soap = content.findSoapContent(start);
+		
+		if(soap == null && content instanceof SoapContent){
 			soap = (SoapContent) content;
 		}
-
-		// Parse SOAP message to JDOM
-		if (soap == null) {
+		
+		if(soap == null){
 			throw new MM7Error("can't find SOAP parts");
 		}
+		
+		// Parse SOAP message to JDOM
+
 		Document doc = soap.getDoc();
 
 		Element body = doc.getRootElement().getChild("Body", ENVELOPE);
@@ -119,9 +108,15 @@ public class MM7Message implements JDOMSupport {
 			mm7.load(doc.getRootElement());
 
 			// Set content if any
-			if (content.getParts() != null && mm7 instanceof HasContent) {
+			if (mm7 instanceof HasContent) {
 				Element contentElement = e.getChild("Content", e.getNamespace());
-				String href = contentElement.getAttributeValue("href", contentElement.getNamespace());
+				String href = null;
+				if(contentElement!=null){
+					href = contentElement.getAttributeValue("href", contentElement.getNamespace());
+				}else{
+					contentElement = e.getChild("Content", e.getNamespace());
+				}
+					
 				if (href == null) {
 					href = contentElement.getAttributeValue("href");
 				}
@@ -132,31 +127,14 @@ public class MM7Message implements JDOMSupport {
 				if (href.startsWith("cid:")) {
 					// Match by content-id
 					String cid = href.substring(4).trim();
-					for (Content c : content.getParts()) {
-						if (cid.equals(c.getContentId())) {
-							payload = c;
-							break;
-						}
-					}
+					payload = content.findPayload(cid, null);
 				} else {
 					// Match by content-location
-					for (Content c : content.getParts()) {
-						if (href.equals(c.getContentLocation())) {
-							payload = c;
-							break;
-						}
-					}
+					payload = content.findPayload(null, href);
 				}
 				// We've got a junk message here... try to be a smart cookie and
 				// use first non-SOAP part
-				if (payload == null) {
-					for (Content c : content.getParts()) {
-						if (!(c instanceof SoapContent)) {
-							payload = c;
-							break;
-						}
-					}
-				}
+				
 				if (payload != null) {
 					((HasContent) mm7).setContent(payload);
 				}
@@ -189,7 +167,7 @@ public class MM7Message implements JDOMSupport {
 			w.write("\r\nContent-Type: text/xml; charset=\"utf-8\"\r\nContent-ID: <");
 			w.write(mm7.getSoapContentId());
 			w.write(">\r\n\r\n");
-
+			w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 			xo.output(mm7.toSOAP(ctx), w);
 
 			w.write("\r\n--");
@@ -223,7 +201,6 @@ public class MM7Message implements JDOMSupport {
 		} else {
 			result = new BinaryContent(part.getContentType(), part.readOnce());
 		}
-		result.setContentType(part.getContentType());
 		result.setContentId(part.getContentId());
 		result.setContentLocation(getContentLocation(part));
 		return result;
@@ -250,7 +227,6 @@ public class MM7Message implements JDOMSupport {
 				}
 				content.setContentId(part.getContentId());
 				content.setContentLocation(getContentLocation(part));
-				content.setContentType(part.getContentType());
 				contents.add(content);
 			}
 			result = new BasicContent(contents);
@@ -267,7 +243,6 @@ public class MM7Message implements JDOMSupport {
 		} else {
 			result = new BinaryContent(contentType.getMimeType(), in);
 		}
-		result.setContentType(contentType.getMimeType());
 		return result;
 	}
 
@@ -350,11 +325,14 @@ public class MM7Message implements JDOMSupport {
 
 		Element header = element.getChild("Header", element.getNamespace());
 		setTransactionId(header.getChildTextTrim("TransactionID", namespace));
+		Element req = (Element) body.getChildren().get(0);
+		setMm7Version(req.getChildTextTrim("MM7Version", req.getNamespace()));
 	}
 
 	@Override
 	public Element save(Element parent) {
 		Element e = new Element(getClass().getSimpleName(), namespace);
+		e.addNamespaceDeclaration(namespace);
 		final String mm7Version = getMm7Version();
 		if (mm7Version != null) {
 			e.addContent(new Element("MM7Version", e.getNamespace()).setText(mm7Version));
@@ -397,14 +375,18 @@ public class MM7Message implements JDOMSupport {
 
 	private Element toSOAP(MM7Context ctx) {
 		Element env = new Element("Envelope", ENVELOPE);
-		if (namespace != null) {
-			env.addNamespaceDeclaration(namespace);
-		}
+		
 		Element header = new Element("Header", ENVELOPE);
 		if (transactionId != null) {
-			header.addContent(new Element("TransactionID", namespace) //
-					.setText(transactionId) //
-					.setAttribute("mustUnderstand", "1", ENVELOPE));
+			Element transactionID = new Element("TransactionID", namespace) //
+			.setText(transactionId) //
+			.setAttribute("mustUnderstand", "1", ENVELOPE);
+			
+			if (namespace != null) {
+				transactionID.addNamespaceDeclaration(namespace);
+			}
+			
+			header.addContent(transactionID);
 		}
 		env.addContent(header);
 

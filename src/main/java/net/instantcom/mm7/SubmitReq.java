@@ -28,10 +28,6 @@ import org.jdom2.Element;
 
 public class SubmitReq extends MM7Request implements HasContent {
 
-	public void addRecipient(Address a) {
-		recipients.add(a);
-	}
-
 	public Boolean getAllowAdaptations() {
 		return allowAdaptations;
 	}
@@ -100,9 +96,7 @@ public class SubmitReq extends MM7Request implements HasContent {
 		return readReply;
 	}
 
-	public List<Address> getRecipients() {
-		return recipients;
-	}
+
 
 	public String getReplyApplicID() {
 		return replyApplicID;
@@ -130,16 +124,8 @@ public class SubmitReq extends MM7Request implements HasContent {
 
 	public Element save(Element parent) {
 		Element e = super.save(parent);
-		e.setName("SubmitReq");
-		if (!recipients.isEmpty()) {
-			Element r = new Element("Recipients", e.getNamespace());
-			addRecipients(r, RecipientType.TO);
-			addRecipients(r, RecipientType.CC);
-			addRecipients(r, RecipientType.BCC);
-			if (r.getContentSize() > 0) {
-				e.addContent(r);
-			}
-		}
+		//e.setName("SubmitReq");
+
 		if (serviceCode != null) {
 			e.addContent(new Element("ServiceCode", e.getNamespace()).setText(serviceCode));
 		}
@@ -282,9 +268,7 @@ public class SubmitReq extends MM7Request implements HasContent {
 		this.readReply = readReply;
 	}
 
-	public void setRecipients(List<Address> recipients) {
-		this.recipients = recipients;
-	}
+
 
 	public void setReplyApplicID(String replyApplicID) {
 		this.replyApplicID = replyApplicID;
@@ -310,19 +294,6 @@ public class SubmitReq extends MM7Request implements HasContent {
 		this.timeStamp = timeStamp;
 	}
 
-	private void addRecipients(Element e, Address.RecipientType recipientType) {
-		Element r = new Element(recipientType.toString(), e.getNamespace());
-		for (Address a : recipients) {
-			if (a.getRecipientType().equals(recipientType)) {
-				r.addContent(a.save(e));
-			}
-		}
-		if (r.getContentSize() > 0) {
-			e.addContent(r);
-		}
-	}
-
-	private List<Address> recipients = new ArrayList<Address>();
 	private String serviceCode;
 	private String linkedId;
 	private MessageClass messageClass = MessageClass.INFORMATIONAL;

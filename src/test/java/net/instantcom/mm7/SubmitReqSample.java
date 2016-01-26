@@ -20,9 +20,12 @@ package net.instantcom.mm7;
 
 import java.io.IOException;
 
+import org.junit.Test;
+
 public class SubmitReqSample {
 
-	public static void main(String[] args) throws IOException {
+	@Test
+	public void test() throws IOException {
 
 		SubmitReq sr = new SubmitReq();
 		sr.setVaspId("InstantCom");

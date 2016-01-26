@@ -107,7 +107,7 @@ public class BinaryContent extends BasicContent {
 	}
 
 	public BinaryContent(String contentType, InputStream in, int maxSize) throws IOException {
-		setContentType(contentType);
+		super(contentType);
 		if (in == null) {
 			throw new IOException("in == null");
 		}

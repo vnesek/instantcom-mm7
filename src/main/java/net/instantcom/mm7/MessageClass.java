@@ -20,6 +20,8 @@ package net.instantcom.mm7;
 
 import java.util.Map;
 
+import net.instantcom.mm7.Address.AddressType;
+
 public enum MessageClass {
 
 	PERSONAL("Personal"), INFORMATIONAL("Informational"), ADVERTISMENT("Advertisment"), AUTO("Auto");
@@ -32,8 +34,12 @@ public enum MessageClass {
 	public String toString() {
 		return display;
 	}
+	
+	public MessageClass valuesOf(String key) {
+		return map.get(key);
+	}
 
 	private final String display;
 
-	static final Map<String, MessageClass> map = new StringToEnumMap<MessageClass>(MessageClass.values());
+	private static final Map<String, MessageClass> map = new StringToEnumMap<MessageClass>(MessageClass.values());
 }
