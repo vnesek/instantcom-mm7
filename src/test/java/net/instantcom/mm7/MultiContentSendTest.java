@@ -2,9 +2,9 @@ package net.instantcom.mm7;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.FormBodyPart;
@@ -28,19 +28,31 @@ public class MultiContentSendTest {
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		HttpPost post = null ;
 		try{
-			String url = "http://127.0.0.1:8081/mm7serv/10085sender";
-			String param = "phone=%s&subject=%s&key=%s&signature=";
+			String url = "http://172.17.15.46:8080/10085sender";
+			String phone = "";
+			//彩信主题
+			String subJect = "";
+			//彩信签名
+			String signature = String.format("【%s】","");
 			
+			StringBuilder sb = new StringBuilder();
+			sb.append(url).append("?");
+			sb.append("phone=").append(phone).append("&");
+			sb.append("subject=").append(URLEncoder.encode(subJect,"utf-8")).append("&");
+			sb.append("key=87ad2eff").append("&");
+			sb.append("signature=").append(URLEncoder.encode(signature,"utf-8"));
+			String fullUrl = sb.toString();
 			
-			post = new HttpPost(url+"?"+String.format(param,"13523513076","Title","87ad2eff")+"%e3%80%90"+"Test"+"%e3%80%91");
-			//post = new HttpPost("http://42.96.185.95:8765");
+			post = new HttpPost(fullUrl);
+			
 			MultipartEntity multi = new MultipartEntity();
-			multi.addPart(new FormBodyPart("a",new StringBody("彩信测试0", org.apache.http.entity.ContentType.TEXT_PLAIN.getMimeType(), Charset.forName("utf-8"))));
-			multi.addPart(new FormBodyPart("b",new StringBody("彩信测试1", org.apache.http.entity.ContentType.TEXT_PLAIN.getMimeType(), Charset.forName("utf-8"))));
+			multi.addPart(new FormBodyPart("a",new StringBody("彩信测试0", "text/plain", Charset.forName("utf-8"))));
+			multi.addPart(new FormBodyPart("b",new StringBody("彩信测试1", "text/plain", Charset.forName("utf-8"))));
 			multi.addPart(new FormBodyPart("smrz.JPG",new FileBody(new File(load("smrz.JPG")),"image/jpeg")));
 			post.setEntity(multi);
 			HttpResponse resp = httpclient.execute(post);
 			String message = EntityUtils.toString(resp.getEntity(), "utf-8");
+			
 			System.out.println(message);			
 		}catch(Exception e){
 			e.printStackTrace();
