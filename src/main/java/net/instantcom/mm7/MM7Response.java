@@ -116,7 +116,12 @@ public class MM7Response extends MM7Message {
 
 		// Handle SOAP faults, status will be found in a Fault detail element
 		if ("Fault".equals(child.getName())) {
-			child = (Element) child.getChild("detail").getChildren().get(0);
+			//child = (Element) child.getChild("detail").getChildren().get(0);
+			if (element.getNamespace("") != null) {
+				 child = (Element) child.getChild("detail",element.getNamespace("")).getChildren().get(0);
+			} else {
+				 child = (Element) child.getChild("detail").getChildren().get(0);
+			}
 		}
 
 		Element status = child.getChild("Status", namespace);

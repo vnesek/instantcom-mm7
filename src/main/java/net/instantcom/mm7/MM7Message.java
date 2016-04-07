@@ -186,9 +186,10 @@ public class MM7Message implements JDOMSupport {
 			final String boundary = mm7.getSoapBoundary();
 			w.write("--");
 			w.write(boundary);
-			w.write("\r\nContent-Type: text/xml; charset=\"utf-8\"\r\nContent-ID: <");
+			w.write("\r\nContent-Type: text/xml; charset=\"utf-8\"\r\nContent-Transfer-Encoding: binary\r\nContent-ID: <");
 			w.write(mm7.getSoapContentId());
 			w.write(">\r\n\r\n");
+			w.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
 
 			xo.output(mm7.toSOAP(ctx), w);
 

@@ -19,6 +19,7 @@
 package net.instantcom.mm7;
 
 import org.jdom2.Element;
+import org.jdom2.output.XMLOutputter;
 
 public class MM7Error extends Exception implements JDOMSupport {
 
@@ -72,22 +73,30 @@ public class MM7Error extends Exception implements JDOMSupport {
 
 	@Override
 	public void load(Element element) {
+
 		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element e = (Element) body.getChildren().get(0);
+		
 		this.faultCode = e.getChildTextTrim("faultcode");
 		this.faultMessage = e.getChildTextTrim("faultstring");
-
-		Element detail = (Element) e.getChild("detail").getChildren().get(0);
-		String message = detail.getName();
-
-		// Instantiate correct status type
 		try {
+			Element detail;
+			if (element.getNamespace("") != null) {
+				 detail = (Element) e.getChild("detail",element.getNamespace("")).getChildren().get(0);
+			} else {
+				 detail = (Element) e.getChild("detail").getChildren().get(0);
+			}
+			String message = detail.getName();
+			// Instantiate correct status type
+
 			Class<?> clazz = Class.forName("net.instantcom.mm7." + message);
 			this.response = (MM7Response) clazz.newInstance();
 			this.response.load(element);
 		} catch (Throwable t) {
 			// Ignored
-			System.err.println("Failed to instantiate a correct response type");
+			XMLOutputter outp = new XMLOutputter();
+			String s = outp.outputString(element);
+			System.err.println("Failed to instantiate a correct response type" + s);
 			t.printStackTrace();
 		}
 	}
