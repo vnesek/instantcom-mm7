@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-interface Content extends Iterable<Content> {
+public interface Content extends Iterable<Content> {
 
 	String getContentId();
 	

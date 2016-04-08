@@ -105,7 +105,11 @@ public class BasicContent implements Content {
 			if (smil == null) {
 				setContentType("multipart/mixed; boundary=\"" + boundary + "\"");
 			} else {
-				setContentType("multipart/related; start=\"<" + smil.getContentId() + ">\"; type=\"" + smil.getContentType()
+				String smilcontentType = smil.getContentType();
+				if (smilcontentType.indexOf(";")!=-1) {
+					smilcontentType = smilcontentType.substring(0, smilcontentType.indexOf(';'));
+				}
+				setContentType("multipart/related; start=\"<" + smil.getContentId() + ">\"; type=\"" + smilcontentType
 						+ "\"; boundary=\"" + boundary + "\"");
 			}
 		}
