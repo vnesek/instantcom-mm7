@@ -18,17 +18,23 @@
 
 package net.instantcom.mm7;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MM7Servlet extends HttpServlet {
+
+	public static final String VASP_BEAN_ATTRIBUTE = "net.instantcom.mm7.vasp_bean";
+	public static final String VASP_ATTRIBUTE = "net.instantcom.mm7.vasp";
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,9 +43,24 @@ public class MM7Servlet extends HttpServlet {
 	}
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
+	public void init() throws ServletException {
+		ServletContext servletContext = getServletConfig().getServletContext();
+
+		// try to load VASP from Spring context first
+		ApplicationContext applicationContext=
+				(ApplicationContext) servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+		if (applicationContext != null) {
+			String vaspBeanName = (String) servletContext.getAttribute(VASP_BEAN_ATTRIBUTE);
+			try {
+				this.vasp = applicationContext.getBean(vaspBeanName, VASP.class);
+			} catch (NoSuchBeanDefinitionException e) {
+				log("VASP bean wasn't found in Spring context. trying to load from servlet context");
+			}
+		}
+
+		// in case no VASP is available in Spring, try to load from servlet context
 		if (vasp == null) {
-			VASP vasp = (VASP) config.getServletContext().getAttribute("net.instantcom.mm7.vasp");
+			VASP vasp = (VASP) servletContext.getAttribute(VASP_ATTRIBUTE);
 			if (vasp == null) {
 				throw new ServletException(
 						"please add an instance of a VASP to a servlet context under key net.instantcom.mm7.vasp");
