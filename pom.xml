@@ -44,7 +44,8 @@
 		<servlet-api.version>3.1.0</servlet-api.version>
 		<mimepull.version>1.9.4</mimepull.version>
 		<spring.version>4.2.5.RELEASE</spring.version>
-		<jetty.version>9.3.8.v20160314</jetty.version>
+		<jetty.version>8.1.19.v20160209</jetty.version> <!-- java 6 -->
+		<!--<jetty.version>9.3.8.v20160314</jetty.version>--> <!-- java 8 -->
 	</properties>
 
 	<dependencies>
