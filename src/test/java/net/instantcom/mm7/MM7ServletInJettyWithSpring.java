@@ -1,7 +1,7 @@
 package net.instantcom.mm7;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -31,10 +31,10 @@ public class MM7ServletInJettyWithSpring {
 
     private void initJetty() {
         webServer = new Server();
-        ServerConnector httpConnector = new ServerConnector(webServer);
+//        ServerConnector httpConnector = new ServerConnector(webServer); // java 8
+        SelectChannelConnector httpConnector = new SelectChannelConnector(); // java 6
         httpConnector.setPort(8080);
         httpConnector.setHost("127.0.0.1");
-        httpConnector.setIdleTimeout(30000);
 
         webServer.addConnector(httpConnector);
     }

@@ -126,17 +126,23 @@ public class BinaryContent extends BasicContent {
 
 		StringBuilder b = new StringBuilder();
 		b.append("\r\nContent-Type: ");
-		b.append(getContentType());
+		b.append(getContentType()).append(";Name=\"").append(getContentLocation()).append("\"");
 		if (contentId != null) {
 			b.append("\r\nContent-ID: <" + contentId + ">");
 		}
 
 		boolean sevenBit = "application/smil".equals(getContentType());
 		if (sevenBit) {
-			b.append("\r\nContent-Transfer-Encoding: 7bit\r\n\r\n");
+			b.append("\r\nContent-Transfer-Encoding: 7bit");
 		} else {
-		    b.append("\r\nContent-Transfer-Encoding: 8bit\r\n\r\n");
+		    b.append("\r\nContent-Transfer-Encoding: BASE64");
 		}
+
+		if(this.getContentLocation() != null) {
+			b.append("\r\nContent-Location: ").append(this.getContentLocation());
+			b.append("\r\nContent-Disposition: Attachment; Filename=").append(this.getContentLocation());
+		}
+		b.append("\r\n\r\n");
 		out.write(b.toString().getBytes("iso-8859-1"));
 		out.write(data);
 	}

@@ -18,11 +18,12 @@
 
 package net.instantcom.mm7;
 
+import org.jdom2.Element;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
-
-import org.jdom2.Element;
 
 public class DeliverReq extends MM7Request implements HasContent {
 
@@ -86,6 +87,8 @@ public class DeliverReq extends MM7Request implements HasContent {
 		Element body = element.getChild("Body", MM7Message.ENVELOPE);
 		Element req = body.getChild("DeliverReq", namespace);
 
+		setMm7Version(req.getChildTextTrim("MM7Version", namespace));
+
 		Element sender = req.getChild("Sender", namespace);
 		if (sender != null) {
 			Address a = new Address();
@@ -95,6 +98,7 @@ public class DeliverReq extends MM7Request implements HasContent {
 			setSender(null);
 		}
 
+		setRecipients(extractRecipients(req.getChild("Recipients", namespace)));
 		setLinkedId(req.getChildTextTrim("LinkedID", namespace));
 		setSenderSPI(req.getChildTextTrim("SenderSPI", namespace));
 		setRecipientSPI(req.getChildTextTrim("RecipientSPI", namespace));
@@ -106,6 +110,26 @@ public class DeliverReq extends MM7Request implements HasContent {
 		setPriority(Priority.valueOf(req.getChildTextTrim("Priority", namespace).toUpperCase()));
 		setTimeStamp(new RelativeDate(req.getChildTextTrim("TimeStamp", namespace)).toDate());
 
+	}
+
+	private List<Address> extractRecipients(Element element) {
+		List<Address> recipientsList = new ArrayList<Address>();
+		if(element != null) {
+
+			Element recipientsTo = element.getChild("To", namespace);
+			if(recipientsTo != null) {
+
+				Iterator recipientsToIter = recipientsTo.getChildren().iterator();
+
+				while(recipientsToIter.hasNext()) {
+					Element recipientsBcc = (Element)recipientsToIter.next();
+					Address address = new Address();
+					address.load(recipientsBcc);
+					recipientsList.add(address);
+				}
+			}
+		}
+		return recipientsList;
 	}
 
 	public void setApplicId(String applicId) {
@@ -170,6 +194,78 @@ public class DeliverReq extends MM7Request implements HasContent {
 		response.setStatusCode(MM7Response.SC_SUCCESS);
 		return response;
 	}
+
+	@Override
+	public Element save(Element parent) {
+		Element e = super.save(parent);
+		if (sender != null) {
+			Element r = new Element("Sender", e.getNamespace());
+			r.addContent(sender.save(e));
+			e.addContent(r);
+		}
+		if (!recipients.isEmpty()) {
+			Element r = new Element("Recipients", e.getNamespace());
+			addRecipients(r, Address.RecipientType.TO);
+			addRecipients(r, Address.RecipientType.CC);
+			addRecipients(r, Address.RecipientType.BCC);
+			if (r.getContentSize() > 0) {
+				e.addContent(r);
+			}
+		}
+		if (linkedId != null) {
+			e.addContent(new Element("LinkedID", e.getNamespace()).setText(linkedId));
+		}
+		if (senderSPI != null) {
+			e.addContent(new Element("SenderSPI", e.getNamespace()).setText(senderSPI));
+		}
+		if (recipientSPI != null) {
+			e.addContent(new Element("RecipientSPI", e.getNamespace()).setText(recipientSPI));
+		}
+		if (timeStamp != null) {
+			e.addContent(new Element("TimeStamp", e.getNamespace()).setText(timeStamp.toString()));
+		}
+		if (replyChargingId != null) {
+			e.addContent(new Element("ReplyChargingID", e.getNamespace()).setText(replyChargingId));
+		}
+		if (priority != null) {
+			e.addContent(new Element("Priority", e.getNamespace()).setText(priority.toString()));
+		}
+		if (Subject != null) {
+			e.addContent(new Element("Subject", e.getNamespace()).setText(Subject));
+		}
+		if (applicId != null) {
+			e.addContent(new Element("ApplicID", e.getNamespace()).setText(applicId));
+		}
+		if (replyApplicId != null) {
+			e.addContent(new Element("ReplyApplicID", e.getNamespace()).setText(replyApplicId));
+		}
+		if (auxApplicInfo != null) {
+			e.addContent(new Element("AuxApplicInfo", e.getNamespace()).setText(auxApplicInfo));
+		}
+		if (content != null) {
+			Element c = new Element("Content", e.getNamespace());
+			String href = c.getAttributeValue("href");
+			if (href != null) {
+				c.setAttribute("href", href);
+			}
+			e.addContent(c);
+		}
+
+		return e;
+	}
+
+	private void addRecipients(Element e, Address.RecipientType recipientType) {
+		Element r = new Element(recipientType.toString(), e.getNamespace());
+		for (Address a : recipients) {
+			if (a.getRecipientType().equals(recipientType)) {
+				r.addContent(a.save(e));
+			}
+		}
+		if (r.getContentSize() > 0) {
+			e.addContent(r);
+		}
+	}
+
 
 	private Address sender;
 	private String linkedId;
