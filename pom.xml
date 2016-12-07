@@ -4,7 +4,7 @@
 	<groupId>net.instantcom.mm7</groupId>
 	<artifactId>instantcom-mm7</artifactId>
 	<name>InstantCom MM7 Client</name>
-	<version>0.9.1</version>
+	<version>0.9.2</version>
 	<description>InstantCom MMS MM7 protocol client implementation</description>
 	<packaging>jar</packaging>
 	<url>https://github.com/vnesek/instantcom-mm7</url>
