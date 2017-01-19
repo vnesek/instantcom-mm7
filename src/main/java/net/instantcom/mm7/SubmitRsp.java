@@ -35,6 +35,15 @@ public class SubmitRsp extends MM7Response {
 		setMessageId(rsp.getChildTextTrim("MessageID", namespace));
 	}
 
+	@Override
+	public Element save(Element parent) {
+		Element e = super.save(parent);
+		if (messageId != null) {
+			e.addContent(new Element("MessageID", e.getNamespace()).setText(messageId));
+		}
+		return e;
+	}
+
 	public void setMessageId(String messageId) {
 		this.messageId = messageId;
 	}

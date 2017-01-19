@@ -48,15 +48,17 @@ public abstract class MMSCBase implements MMSC {
 	}
 
 	private MM7Response post(MM7Request request) throws MM7Error {
+		HttpURLConnection conn = null;
 		try {
 			final MM7Context ctx = getContext();
 			final URL u = new URL(getUrl());
-			final HttpURLConnection conn = getHttpURLConnection(u);
+			conn = getHttpURLConnection(u);
 
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 			conn.setUseCaches(false);
 
+			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", request.getSoapContentType());
 			conn.setRequestProperty("User-Agent", ctx.getUserAgent());
 			conn.setRequestProperty("Accept", "*/*");
@@ -80,33 +82,40 @@ public abstract class MMSCBase implements MMSC {
 			try {
 				MM7Message.save(request, out, ctx);
 			} finally {
+				out.flush();
 				out.close();
 			}
 
 			String contentType = conn.getContentType();
-			try {
-				if (contentType.startsWith("text/xml") || contentType.startsWith("multipart/")) {
-					InputStream in;
-					try {
-						in = conn.getInputStream();
-					} catch (IOException e) {
-						if (conn.getResponseCode() >= 400) {
-							in = conn.getErrorStream();
-						} else {
-							throw e;
-						}
+			if (contentType != null && (contentType.startsWith("text/xml") || contentType.startsWith("multipart/"))) {
+				InputStream in;
+				try {
+					in = conn.getInputStream();
+				} catch (IOException e) {
+					if (conn.getResponseCode() >= 400) {
+						in = conn.getErrorStream();
+					} else {
+						throw e;
 					}
-					return (MM7Response) MM7Message.load(in, contentType, getContext());
-				} else {
-					throw new MM7Error("unexpected content type: " + contentType + ", status: " + //
-							conn.getResponseCode() + " " + conn.getResponseMessage() + ", content: " + //
-							conn.getContent());
 				}
-			} finally {
-				conn.disconnect();
+				try {
+					return (MM7Response) MM7Message.load(in, contentType, getContext());
+				} finally {
+					if (in != null) {
+						in.close();
+					}
+				}
+			} else {
+				throw new MM7Error("unexpected content type: " + contentType + ", status: " + //
+						conn.getResponseCode() + " " + conn.getResponseMessage() + ", content: " + //
+						conn.getContent());
 			}
 		} catch (IOException ioe) {
-			throw new MM7Error("IO error: " + ioe.getMessage());
+			throw new MM7Error("IO error: " + ioe.getMessage(), ioe);
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
 		}
 	}
 
