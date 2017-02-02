@@ -18,10 +18,10 @@
 
 package net.instantcom.mm7;
 
+import org.jdom2.Element;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jdom2.Element;
 
 public class MM7Response extends MM7Message {
 
@@ -156,13 +156,6 @@ public class MM7Response extends MM7Message {
 		return statusCode == 1000;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder b = new StringBuilder(getClass().getSimpleName());
-		b.append("(").append(statusCode).append(" ").append(statusText);
-		b.append(", tid=").append(getTransactionId()).append(")");
-		return b.toString();
-	}
 
 	private int statusCode;
 	private String statusText;

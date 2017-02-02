@@ -18,9 +18,9 @@
 
 package net.instantcom.mm7;
 
-import java.util.Map;
-
 import org.jdom2.Element;
+
+import java.util.Map;
 
 public class Address implements JDOMSupport {
 
@@ -115,8 +115,11 @@ public class Address implements JDOMSupport {
 	public void load(Element e) {
 		{
 			String value = e.getAttributeValue("displayOnly", e.getNamespace());
+			String valueNoNS = e.getAttributeValue("displayOnly");
 			if (value != null) {
 				displayOnly = Boolean.parseBoolean(value);
+			} else if (valueNoNS != null) {
+				displayOnly = Boolean.parseBoolean(valueNoNS);
 			}
 		}
 		{

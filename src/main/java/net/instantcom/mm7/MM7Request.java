@@ -42,6 +42,9 @@ public class MM7Request extends MM7Message {
 		Element e = super.save(parent);
 		if (vaspId != null || vasId != null) {
 			Element si = new Element("SenderIdentification", e.getNamespace());
+			if (relayServerId != null) {
+				si.addContent(new Element("MMSRelayServerID", e.getNamespace()).setText(relayServerId));
+			}
 			if (vaspId != null) {
 				si.addContent(new Element("VASPID", e.getNamespace()).setText(vaspId));
 			}
