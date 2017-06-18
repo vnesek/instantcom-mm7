@@ -125,8 +125,12 @@ public class BinaryContent extends BasicContent {
 		}
 
 		StringBuilder b = new StringBuilder();
-		b.append("\r\nContent-Type: ");
-		b.append(getContentType()).append(";Name=\"").append(getContentLocation()).append("\"");
+		b.append("\r\nContent-Type: ").append(getContentType());
+		
+		if(getContentLocation() != null && !getContentLocation().equals("")){
+			b.append(";Name=\"").append(getContentLocation()).append("\"");
+		}
+		
 		if (contentId != null) {
 			b.append("\r\nContent-ID: <" + contentId + ">");
 		}
@@ -144,7 +148,13 @@ public class BinaryContent extends BasicContent {
 		}
 		b.append("\r\n\r\n");
 		out.write(b.toString().getBytes("iso-8859-1"));
-		out.write(data);
+		
+		if(sevenBit){
+			out.write(data);	
+		} else {
+			ctx.newBase64OutputStream(out).write(data);
+		}
+		
 	}
 
 	@Override
