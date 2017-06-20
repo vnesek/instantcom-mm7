@@ -39,6 +39,19 @@ public interface VASP {
 	 *             if message can't be delivered
 	 */
 	DeliverRsp deliver(DeliverReq deliverReq) throws MM7Error;
+	
+	/**
+	 * Handles delivery report from MMSC.
+	 *
+	 * @param DeliveryReportReq
+	 *            MMS delivery report delivered from MMSC.
+	 *
+	 * @return deliveryReportRsp instance
+	 *
+	 * @throws MM7Error
+	 *             if message can't be process
+	 */
+	DeliveryReportRsp deliveryReport(DeliveryReportReq deliveryReportReq) throws MM7Error;
 
 	/**
 	 * Context used for serializing/deserializing MM7 messages.
