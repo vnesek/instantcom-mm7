@@ -24,4 +24,11 @@ public class SampleSpringVASP implements VASP {
     public MM7Context getContext() {
         return context;
     }
+
+	@Override
+	public DeliveryReportRsp deliveryReport(DeliveryReportReq deliveryReportReq) throws MM7Error {
+		System.out.println("deliver in VASP was called");
+
+        return null;
+	}
 }
