@@ -52,6 +52,19 @@ public interface VASP {
 	 *             if message can't be process
 	 */
 	DeliveryReportRsp deliveryReport(DeliveryReportReq deliveryReportReq) throws MM7Error;
+	
+	/**
+	 * Handles read reply from MMSC.
+	 *
+	 * @param ReadReplyReq
+	 *            MMS delivery read reply from MMSC.
+	 *
+	 * @return readReplyRsp instance
+	 *
+	 * @throws MM7Error
+	 *             if message can't be process
+	 */
+	ReadReplyRsp readReply(ReadReplyReq readReplyReq) throws MM7Error;
 
 	/**
 	 * Context used for serializing/deserializing MM7 messages.

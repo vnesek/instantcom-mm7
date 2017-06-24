@@ -27,8 +27,15 @@ public class SampleSpringVASP implements VASP {
 
 	@Override
 	public DeliveryReportRsp deliveryReport(DeliveryReportReq deliveryReportReq) throws MM7Error {
-		System.out.println("deliver in VASP was called");
+		System.out.println("deliveryReport in VASP was called");
 
         return null;
+	}
+
+	@Override
+	public ReadReplyRsp readReply(ReadReplyReq readReplyReq) throws MM7Error {
+		System.out.println("readReplyReq in VASP was called");
+		
+		return null;
 	}
 }
