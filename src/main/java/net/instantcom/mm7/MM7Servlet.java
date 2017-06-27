@@ -76,8 +76,12 @@ public class MM7Servlet extends HttpServlet {
 		MM7Response resp;
 		if (req instanceof DeliverReq) {
 			resp = getVasp().deliver((DeliverReq) req);
+		} else if (req instanceof DeliveryReportReq) {
+			resp = getVasp().deliveryReport((DeliveryReportReq) req);
+		} else if (req instanceof ReadReplyReq) {
+			resp = getVasp().readReply((ReadReplyReq) req);
 		} else {
-			throw new MM7Error("method not supported");
+			throw new MM7Error("method not supported: " + req.getClass() );
 		}
 		return resp;
 	}
