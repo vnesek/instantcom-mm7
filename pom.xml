@@ -74,6 +74,14 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>java-rt</groupId>
+			<artifactId>java-rt</artifactId>
+			<version>IGNORED</version>
+			<scope>system</scope>
+			<systemPath>${java.home}/lib/rt.jar</systemPath>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${servlet-api.version}</version>

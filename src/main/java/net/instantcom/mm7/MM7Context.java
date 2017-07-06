@@ -104,6 +104,10 @@ public class MM7Context {
 				s.write("test123".getBytes("iso-8859-1"));
 				s.close();
 				String encoded = baos.toString("iso-8859-1");
+				if (BASE64_OUTPUT_STREAM_CLASSES[0].equals(base64OutputStream.getName())) {
+				    // commons-codec with the default constructor adds a newline to test output
+				    encoded = encoded.trim();
+				}
 				if (!encoded.equals("dGVzdDEyMw==")) {
 					throw new IllegalArgumentException(base64OutputStream.getName()
 							+ " incorrectly encodes BASE64 data");
