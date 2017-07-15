@@ -209,7 +209,8 @@ public class MM7Message implements JDOMSupport {
 
 	private static BasicContent fromPart(MIMEPart part, ContentType contentType) throws IOException {
 		BasicContent result;
-		if (contentType.getPrimaryType().equals("text") || contentType.getSubType().equals("smilx")) {
+		if (contentType.getPrimaryType().equals("text") || contentType.getSubType().equals("smilx")
+				|| contentType.getMimeTypeWithoutParams().equals("application/xml")) {
 			if (contentType.getSubType().equals("xml")) {
 				result = new SoapContent(part.readOnce());
 			} else {
@@ -255,7 +256,8 @@ public class MM7Message implements JDOMSupport {
 				contents.add(content);
 			}
 			result = new BasicContent(contents);
-		} else if (contentType.getMimeTypeWithoutParams().equals("text/xml")) {
+		} else if (contentType.getMimeTypeWithoutParams().equals("text/xml") 
+				|| contentType.getMimeTypeWithoutParams().equals("application/xml")) {
 			result = new SoapContent(in);
 		} else if (contentType.getPrimaryType().equals("text")) {
 			TextContent text = new TextContent();
