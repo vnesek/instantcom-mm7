@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+  <env:Header>
+    <TransactionID xmlns="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-5-MM7-1-3" env:mustUnderstand="1">0_1500103103727</TransactionID>
+  </env:Header>
+  <env:Body>
+    <env:Fault>
+      <env:faultcode>env:Client</env:faultcode>
+      <env:faultstring>Client error</env:faultstring>
+      <env:detail>
+        <RSErrorRsp xmlns="http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-5-MM7-1-3">
+          <MM7Version>5.3.0</MM7Version>
+          <Status>
+            <StatusCode>2002</StatusCode>
+            <StatusText>Address Error</StatusText>
+          </Status>
+        </RSErrorRsp>
+      </env:detail>
+    </env:Fault>
+  </env:Body>
+</env:Envelope>

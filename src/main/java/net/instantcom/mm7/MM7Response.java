@@ -120,7 +120,11 @@ public class MM7Response extends MM7Message {
 			if (element.getNamespace("") != null) {
 				 child = (Element) child.getChild("detail",element.getNamespace("")).getChildren().get(0);
 			} else {
-				 child = (Element) child.getChild("detail").getChildren().get(0);
+				 if(child.getChild("detail") != null) {
+					 child = (Element) child.getChild("detail").getChildren().get(0);
+				 } else {
+					 child = (Element) child.getChild("detail", MM7Message.ENVELOPE).getChildren().get(0);
+				 }
 			}
 		}
 
