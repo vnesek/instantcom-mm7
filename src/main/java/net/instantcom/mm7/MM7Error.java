@@ -79,12 +79,25 @@ public class MM7Error extends Exception implements JDOMSupport {
 		
 		this.faultCode = e.getChildTextTrim("faultcode");
 		this.faultMessage = e.getChildTextTrim("faultstring");
+		
+		if(faultCode == null) {
+			this.faultCode = e.getChildTextTrim("faultcode", MM7Message.ENVELOPE);
+		}
+		
+		if(faultMessage == null) {
+			this.faultMessage = e.getChildTextTrim("faultstring", MM7Message.ENVELOPE);
+		}		
+
 		try {
 			Element detail;
 			if (element.getNamespace("") != null) {
 				 detail = (Element) e.getChild("detail",element.getNamespace("")).getChildren().get(0);
 			} else {
-				 detail = (Element) e.getChild("detail").getChildren().get(0);
+				 if(e.getChild("detail") != null) {
+					 detail = (Element) e.getChild("detail").getChildren().get(0);
+				 } else {
+					 detail = (Element) e.getChild("detail", MM7Message.ENVELOPE).getChildren().get(0);
+				 }				 
 			}
 			String message = detail.getName();
 			// Instantiate correct status type

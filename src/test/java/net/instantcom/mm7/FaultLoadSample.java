@@ -32,5 +32,16 @@ public class FaultLoadSample {
 			System.out.println("=== Complete SOAP body ===");
 			System.out.println(e);
 		}
+		
+		
+		InputStream is2 = FaultLoadSample.class.getResourceAsStream("fault_02.xml");
+
+		try {
+			MM7Message.load(is2, "text/xml", new MM7Context());
+		} catch (MM7Error e) {
+			System.out.println(e.getResponse());
+			System.out.println("=== Complete SOAP body ===");
+			System.out.println(e);
+		}
 	}
 }
