@@ -135,7 +135,7 @@ public class BinaryContent extends BasicContent {
 			b.append("\r\nContent-ID: <" + contentId + ">");
 		}
 
-		boolean sevenBit = "application/smil".equals(getContentType());
+		boolean sevenBit = ("application/smil".equals(getContentType()) || "application/smil+xml".equals(getContentType())); 
 		if (sevenBit) {
 			b.append("\r\nContent-Transfer-Encoding: 7bit");
 		} else {
