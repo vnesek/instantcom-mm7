@@ -21,6 +21,8 @@ package net.instantcom.mm7;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import org.junit.Test;
 
+import com.sun.mail.util.BASE64EncoderStream;
+
 /**
  * Test Base64 encoder construction
  */
@@ -30,5 +32,11 @@ public class Base64EncoderTest {
 	public void base64ApacheCommons() {
 		MMSC mmsc = new BasicMMSC("http://localhost:8080");
 		mmsc.getContext().setBase64OutputStream(Base64OutputStream.class);
+	}
+	
+	@Test
+	public void base64JavaxMail() {
+		MMSC mmsc = new BasicMMSC("http://localhost:8080");
+		mmsc.getContext().setBase64OutputStream(BASE64EncoderStream.class);
 	}
 }

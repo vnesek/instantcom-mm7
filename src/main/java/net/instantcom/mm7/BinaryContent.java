@@ -150,9 +150,13 @@ public class BinaryContent extends BasicContent {
 		out.write(b.toString().getBytes("iso-8859-1"));
 		
 		if(sevenBit){
-			out.write(data);	
+			out.write(data);
+			out.flush();
 		} else {
-			ctx.newBase64OutputStream(out).write(data);
+			OutputStream base64out = ctx.newBase64OutputStream(out);
+			
+			base64out.write(data);
+			base64out.flush();
 		}
 		
 	}

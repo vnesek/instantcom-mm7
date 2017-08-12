@@ -40,6 +40,7 @@
 	<properties>
 		<jdom.version>2.0.2</jdom.version>
 		<commons-codec.version>1.10</commons-codec.version>
+		<javax-mail.version>1.5.0-b01</javax-mail.version>
 		<junit.version>4.12</junit.version>
 		<servlet-api.version>3.1.0</servlet-api.version>
 		<mimepull.version>1.9.4</mimepull.version>
@@ -72,6 +73,12 @@
 			<artifactId>commons-codec</artifactId>
 			<version>${commons-codec.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>${javax-mail.version}</version>
+		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -119,7 +126,7 @@
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
+		</snapshotRepository>		
 	</distributionManagement>
 
 	<profiles>
