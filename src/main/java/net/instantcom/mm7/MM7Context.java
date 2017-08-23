@@ -34,7 +34,8 @@ import org.jvnet.mimepull.MIMEConfig;
 public class MM7Context {
 
 	private static String[] BASE64_OUTPUT_STREAM_CLASSES = { "org.apache.commons.codec.binary.Base64OutputStream",
-			"com.sun.xml.internal.messaging.saaj.packaging.mime.util.BASE64EncoderStream" };
+			"com.sun.xml.internal.messaging.saaj.packaging.mime.util.BASE64EncoderStream",
+			"com.sun.mail.util.BASE64EncoderStream"};
 
 	public Class<? extends OutputStream> getBase64OutputStream() {
 		return base64OutputStream;
@@ -104,8 +105,9 @@ public class MM7Context {
 				s.write("test123".getBytes("iso-8859-1"));
 				s.close();
 				String encoded = baos.toString("iso-8859-1");
-				if (BASE64_OUTPUT_STREAM_CLASSES[0].equals(base64OutputStream.getName())) {
-				    // commons-codec with the default constructor adds a newline to test output
+				if (BASE64_OUTPUT_STREAM_CLASSES[0].equals(base64OutputStream.getName()) || 
+						BASE64_OUTPUT_STREAM_CLASSES[2].equals(base64OutputStream.getName()) ){
+				    // commons-codec and javax.mail with the default constructor adds a newline to test output
 				    encoded = encoded.trim();
 				}
 				if (!encoded.equals("dGVzdDEyMw==")) {

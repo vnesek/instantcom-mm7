@@ -135,7 +135,7 @@ public class BinaryContent extends BasicContent {
 			b.append("\r\nContent-ID: <" + contentId + ">");
 		}
 
-		boolean sevenBit = "application/smil".equals(getContentType());
+		boolean sevenBit = ("application/smil".equals(getContentType()) || "application/smil+xml".equals(getContentType())); 
 		if (sevenBit) {
 			b.append("\r\nContent-Transfer-Encoding: 7bit");
 		} else {
@@ -150,9 +150,13 @@ public class BinaryContent extends BasicContent {
 		out.write(b.toString().getBytes("iso-8859-1"));
 		
 		if(sevenBit){
-			out.write(data);	
+			out.write(data);
+			out.flush();
 		} else {
-			ctx.newBase64OutputStream(out).write(data);
+			OutputStream base64out = ctx.newBase64OutputStream(out);
+			
+			base64out.write(data);
+			base64out.flush();
 		}
 		
 	}
